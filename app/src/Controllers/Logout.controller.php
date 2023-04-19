@@ -6,7 +6,7 @@
 
         // Logout control function
         public function logout() {
-            if (Http_POST()) {
+            if ($_POST) {
                 if(!isset($_SESSION)) { 
                     session_start(); 
                 }

@@ -66,14 +66,12 @@
         // User update function
         public function update() {
             if (Http_PUT()) {
-                parse_str(Http_Method(), $_PUT);
-
-                $this->id_user = $_PUT['id_user'];
-                $this->name = $_PUT['name'];
-                $this->lastname = $_PUT['lastname'];
-                $this->email = $_PUT['email'];
-                $this->password = $_PUT['password'];
-                $this->status = $_PUT['status'];
+                $this->id_user = $_POST['id_user'];
+                $this->name = $_POST['name'];
+                $this->lastname = $_POST['lastname'];
+                $this->email = $_POST['email'];
+                $this->password = $_POST['password'];
+                $this->status = $_POST['status'];
 
                 if (empty($this->id_user) || empty($this->name) || empty($this->lastname) || empty($this->email)) {
                     $res = array(
@@ -121,9 +119,7 @@
         // User delete function
         public function delete() {
             if (Http_DELETE()) {
-                parse_str(Http_Method(), $_DELETE);
-
-                $this->id_user = $_DELETE['id_user'];
+                $this->id_user = $_GET['id_user'];
 
                 if (empty($this->id_user)) {
                     $res = array(
@@ -153,12 +149,7 @@
         // Users all get function
         public function getAll() {
             if ($_GET) {
-                $req = $this->model->getAll();
-                $res = array(
-                    'status' => true, 
-                    'data' => $req
-                );
-
+                $res = $this->model->getAll();
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
             }
             die();
@@ -168,13 +159,11 @@
         public function get() {
             if ($_GET) {
                 $this->id_user = $_GET['id_user'];
-
                 $req = $this->model->get($this->id_user);
                 $res = array(
                     'status' => true, 
                     'data' => $req
                 );
-
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
             }
             die();

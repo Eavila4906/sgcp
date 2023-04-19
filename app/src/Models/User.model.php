@@ -67,7 +67,7 @@
         public function getAll() {
             $Query = "SELECT us.id_user, us.username, us.email, GROUP_CONCAT(rl.rol SEPARATOR ', ') AS rol, us.status 
                       FROM user_roles ur INNER JOIN user us ON (us.id_user=ur.user)
-                      INNER JOIN rol rl ON (rl.id_rol=ur.rol) GROUP BY us.username";
+                      INNER JOIN rol rl ON (rl.id_rol=ur.rol) WHERE us.status != 0 GROUP BY us.username";
             return $this->SelectAllMySQL($Query);
         }
 

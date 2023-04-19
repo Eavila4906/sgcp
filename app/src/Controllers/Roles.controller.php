@@ -45,12 +45,10 @@
         // Rol update function
         public function update() {
             if (Http_PUT()) {
-                parse_str(Http_Method(), $_PUT);
-
-                $this->id_rol = $_PUT['id_rol'];
-                $this->rol = $_PUT['rol'];
-                $this->description = $_PUT['description'];
-                $this->status = $_PUT['status'];
+                $this->id_rol = $_POST['id_rol'];
+                $this->rol = $_POST['rol'];
+                $this->description = $_POST['description'];
+                $this->status = $_POST['status'];
 
                 if (empty($this->id_rol) || empty($this->rol) || empty($this->description) || empty($this->status)) {
                     $res = array(
@@ -85,9 +83,7 @@
         // Rol delete function
         public function delete() {
             if (Http_DELETE()) {
-                parse_str(Http_Method(), $_DELETE);
-
-                $this->id_rol = $_DELETE['id_rol'];
+                $this->id_rol = $_GET['id_rol'];
 
                 if (empty($this->id_rol)) {
                     $res = array(
@@ -122,12 +118,7 @@
         // Rol all get function
         public function getAll() {
             if ($_GET) {
-                $req = $this->model->getAll();
-                $res = array(
-                    'status' => true, 
-                    'data' => $req
-                );
-
+                $res= $this->model->getAll();
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
             }
             die();
@@ -137,13 +128,11 @@
         public function get() {
             if ($_GET) {
                 $this->id_rol = $_GET['id_rol'];
-
                 $req = $this->model->get($this->id_rol);
                 $res = array(
                     'status' => true, 
                     'data' => $req
                 );
-
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
             }
             die();

@@ -7,9 +7,7 @@
         
         // Login control function
         public function login() {
-            if (Http_POST()) {
-                parse_str(Http_Method(), $_POST);
-
+            if ($_POST) {
                 if (empty($_POST['user']) || empty($_POST['password'])) {
                     $res = array(
                         'status' => false, 
@@ -40,7 +38,7 @@
                                 'status' => true, 
                                 'login' => true,
                                 'username' => $username, 
-                                'user roles' => $req_userRoles
+                                'roles' => $req_userRoles
                             );
                         } else {
                             $res = array(
@@ -57,9 +55,7 @@
 
         // Password reset function in case the user loses his password 
         public function PasswordReset() {
-            if (Http_POST()) {
-                parse_str(Http_Method(), $_POST);
-
+            if ($_POST) {
                 if (empty($_POST['email'])) {
                     $res = array(
                         'status' => false, 
@@ -140,9 +136,7 @@
 
         // Password update function
         public function PasswordUpdate() {
-            if (Http_POST()) {
-                parse_str(Http_Method(), $_POST);
-
+            if ($_POST) {
                 if (empty($_POST['id_user']) || empty($_POST['token'])) {
                     $res = array(
                         'status' => false, 
