@@ -6,7 +6,7 @@
 
         // New register rol function
         public function create($rol, $description, $status) {
-            $Query_validate = "SELECT * FROM rol WHERE rol = '$rol'";
+            $Query_validate = "SELECT * FROM rol WHERE rol = '$rol' AND status != 0";
             $req_validate = $this->SelectAllMySQL($Query_validate);
 
             if (!empty($req_validate)) {
@@ -47,7 +47,7 @@
 
         // Rol delete function
         public function delete($id_rol, $status) {
-            $Query_validate = "SELECT * FROM user_roles WHERE rol = '$id_rol'";
+            $Query_validate = "SELECT * FROM user_roles WHERE rol = '$id_rol' AND status != 0";
             $req_validate = $this->SelectAllMySQL($Query_validate);
 
             if (!empty($req_validate)) {

@@ -30,8 +30,8 @@
         }
 
         // Extract permissions function sesion
-        public function permissionsModules($id_rol){
-            $Query = "SELECT p.rol, p.modulo, m.nombreModulo, p.r, p.w, p.u, p.d
+        public function modulesPermissions($id_rol){
+            $Query = "SELECT p.rol, p.module, m.module AS nameModule, p.r, p.w, p.u, p.d
                             FROM permissions p INNER JOIN module m 
                             ON (p.module=m.id_module)
                             WHERE p.rol = $id_rol";

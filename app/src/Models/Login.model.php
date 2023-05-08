@@ -23,7 +23,7 @@
         public function SelectRolesUser(int $id_user) {
             $Query_Select = "SELECT r.id_rol, r.rol
                             FROM rol r INNER JOIN user_roles ur ON (ur.rol=r.id_rol) 
-                            WHERE ur.user = $id_user";
+                            WHERE ur.user = $id_user AND ur.status = 1";
             $res = $this->SelectAllMySQL($Query_Select);
             return $res;
         }

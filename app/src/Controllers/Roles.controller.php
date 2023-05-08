@@ -10,9 +10,9 @@
             if ($_POST) {
                 $this->rol = $_POST['rol'];
                 $this->description = $_POST['description'];
-                $this->status = 1;
+                $this->status = $_POST['status'];
 
-                if (empty($this->rol) || empty($this->description)) {
+                if (empty($this->rol) || empty($this->description) || empty($this->status)) {
                     $res = array(
                         'status' => false, 
                         'msg' => 'All fields are required.'
@@ -44,7 +44,8 @@
         
         // Rol update function
         public function update() {
-            if (Http_PUT()) {
+            if ($_POST) {
+                //parse_str(Http_Method(), $_PUT);
                 $this->id_rol = $_POST['id_rol'];
                 $this->rol = $_POST['rol'];
                 $this->description = $_POST['description'];

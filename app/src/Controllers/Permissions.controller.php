@@ -8,16 +8,16 @@
         public function Assign() {
             if ($_POST) {
                 $id_rol = intval($_POST['id_rol']);
-                $module = $_POST['module'];
+                $modules = $_POST['module'];
 
                 $this->model->delete($id_rol);
-                foreach ($module as $module) {
+                foreach ($modules as $module) {
                     $id_module = $module['id_module'];
                     $r = empty($module['r']) ? 0 : 1;
                     $w = empty($module['w']) ? 0 : 1;
                     $u = empty($module['u']) ? 0 : 1;
                     $d = empty($module['d']) ? 0 : 1;  
-                    $req = $this->model->create($id_rol, $id_module, $r, $w, $u, $d);  
+                    $req = $this->model->create($id_rol, $id_module, $r, $w, $u, $d);
                 }
 
                 if ($req > 0) {
@@ -87,6 +87,39 @@
                     );
                 }
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        public function getPermissions(){
+            if ($_GET) {
+                $module = $_GET['id_module'];
+                $id_rol = $_GET['id_rol'];
+                $req = $this->model->modulesPermissions($id_rol);
+                $permissions = "";
+                
+                if (count($req) > 0) {
+                    $permissions = isset($req[$module]) ? $req[$module] : "";
+                }
+
+                $_SESSION['permissions'] = $permissions;
+                echo json_encode($_SESSION['permissions'], JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        public function getPermissionsModules(){
+            if ($_GET) {
+                $id_rol = $_GET['id_rol'];
+                $req = $this->model->modulesPermissions($id_rol);
+                $modulePermissions = "";
+
+                if (count($req) > 0) {
+                    $modulePermissions = $req;
+                }
+
+                $_SESSION['modulePermissions'] = $modulePermissions;
+                echo json_encode($_SESSION['modulePermissions'], JSON_UNESCAPED_UNICODE);
             }
             die();
         }
