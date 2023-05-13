@@ -262,7 +262,7 @@
                 if ($req > 0) {
                     $res = array(
                         'status' => true, 
-                        'msg' => 'Permissions assigned successfully.'
+                        'msg' => 'Roles assigned successfully.'
                     );
                 } else {
                     $res = array(
