@@ -60,25 +60,27 @@
                             </div>
                             <div class="col-md-8 d-flex align-items-center">
                             <div class="card-body py-5 px-4 p-md-5">
-
-                                <form action="">
+                                <form id="form-recoveryPassword">
                                     <h4 class="fw-bold mb-4" style="color: #92aad0;">Restablecer contraseña</h4>
+                                    
+                                    <input type="hidden" name="id_user" id="id_user" value="<?=$data['id_user']?>">
+                                    <input type="hidden" name="email" id="email" value="<?=$data['email']?>">
+                                    <input type="hidden" name="token" id="token" value="<?=$data['token']?>">
 
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="form2Example2">Nueva contraseña</label>
-                                        <input type="password" id="form2Example2" class="form-control" />
+                                        <input type="password" class="form-control" name="password" id="password" required/>
                                     </div>
 
                                     <div class="form-outline mb-4">
                                         <label class="form-label" for="form2Example2">Confirmar contraseña</label>
-                                        <input type="password" id="form2Example2" class="form-control" />
+                                        <input type="password" class="form-control" name="passwordconfirmation" id="passwordconfirmation" required/>
                                     </div>
 
                                     <div class="d-flex justify-content-end pt-1 mb-4">
-                                        <button class="btn btn-primary btn-rounded" type="button" style="background-color: #92aad0;">Listo</button>
+                                        <button class="btn btn-primary btn-rounded" type="submit" style="background-color: #3369c0;">Listo</button>
                                     </div>
                                 </form>
-
                             </div>
                             </div>
                         </div>
@@ -89,5 +91,10 @@
                 </div>
             </div>
         </section>
+        <script src="<?= $data['service'];?>"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.0.0/sweetalert.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     </body>
 </html>

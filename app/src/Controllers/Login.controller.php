@@ -75,8 +75,8 @@
                         $this->id_user = $req['id_user'];
                         $this->username = $req['username'];
 
-                        $this->url_recovery = BASE_URL().'login/PassResetConfirm/'.$this->email.'/'.$token;
-					    $req_1 = $this->model->InsertTokenUser($this->id_user, $token);
+                        $this->url_recovery = BASE_URL().'login/PassResetConfirm/'.$this->email.'/'.$this->token;
+					    $req_1 = $this->model->InsertTokenUser($this->id_user, $this->token);
 
                         $this->userData = array(
                             'user' => $this->username,
@@ -86,7 +86,7 @@
                         );
 
                         if ($req_1) {
-                            $this->sendEmail = sendEmail($this->userData, 'PasswordReset');
+                            $this->sendEmail = sendEmail($this->userData, 'RecoverPassword');
 
                             if ($this->sendEmail) {
                                 $res = array(
@@ -96,7 +96,8 @@
                             } else {
                                 $res = array(
                                     'status' => false, 
-                                    'msg' => 'No es posible realizar este proceso, intenta más tarde.' 
+                                    'msg' => 'No es posible realizar este proceso, intenta más tarde.',
+                                    'url' => $this->url_recovery
                                 );
                             }
                         } else {
@@ -124,11 +125,11 @@
                 if (empty($req)) {
                     header('Location: '.BASE_URL().'login');
                 } else {
-                    $data['middleware'] = BASE_URL()."app/src/Middlewares/".$this->className.".middleware.js";
-                    $data['id_user'] = $arrayData['id_user'];
+                    $data['service'] = BASE_URL()."app/src/Services/RecoveryPassword.js";
+                    $data['id_user'] = $req['id_user'];
                     $data['email'] = $email;
                     $data['token'] = $token;
-                    $this->views->getViews($this,"ResetPassword.view", $data);
+                    $this->views->getViews($this,"ResetPassword", $data);
                 }
             }
             die();
@@ -137,14 +138,14 @@
         // Password update function
         public function PasswordUpdate() {
             if ($_POST) {
-                if (empty($_POST['id_user']) || empty($_POST['token'])) {
+                if (empty($_POST['id_user']) || empty($_POST['email']) || empty($_POST['token'])) {
                     $res = array(
                         'status' => false, 
                         'msg' => 'Data error, the application may be being tampered with with malicious code.' 
                     );
                     exit;
                 }
-                if (empty($_POST['id_user']) || empty($_POST['token']) || empty($_POST['password']) || empty($_POST['passwordConfirm'])) {
+                if (empty($_POST['id_user']) || empty($_POST['token']) || empty($_POST['password']) || empty($_POST['passwordconfirmation'])) {
                     $res = array(
                         'status' => false, 
                         'msg' => 'Todos los campos son obligatorios' 
@@ -152,17 +153,17 @@
                 } else {
                     $this->id_user = intval($_POST['id_user']);
                     $this->password = $_POST['password'];
-                    $this->passwordConfirm = $_POST['passwordConfirm'];
+                    $this->passwordconfirmation = $_POST['passwordconfirmation'];
                     $this->email = $_POST['email'];
                     $this->token = $_POST['token'];
 
-                    if ($this->password != $this->passwordConfirm) {
+                    if ($this->password != $this->passwordconfirmation) {
                         $res = array(
                             'status' => false, 
                             'msg' => 'Las contraseñas no son iguales.'
                         );
                     } else {
-                        $req = $this->model->SelectUserToken($email, $token);
+                        $req = $this->model->SelectUserToken($this->email, $this->token);
 
                         if (empty($req)) {
                             $res = array(
@@ -176,7 +177,7 @@
                             if ($req_1) {
                                 $res = array(
                                     'status' => true, 
-                                    'msg' => 'Contraseña actualizada con éxito.'
+                                    'msg' => 'Su contraseña ha sido actualizada con éxito.'
                                 );
                             } else {
                                 $res = array(
