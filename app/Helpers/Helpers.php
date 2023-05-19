@@ -1,4 +1,9 @@
 <?php
+    require_once(LIBS.'jwt/src/JWT.php');
+    use Firebase\JWT\JWT;
+    use Firebase\JWT\Key;
+
+
     /*
     ####################################################################################
     ############################### URL BASE ###########################################
@@ -6,15 +11,6 @@
     */
     function BASE_URL() {
         return BASE_URL;
-    }
-    
-    /*
-    ####################################################################################
-    ############################### ASSETS DIRECTORY ###################################
-    ####################################################################################
-    */
-    function MEDIA() {
-        return BASE_URL.MEDIA;
     }
 
     /*
@@ -44,18 +40,6 @@
         }
     }  
 
-     //View header
-     function header_view($data=""){
-        $header = "./app/src/Views/Templates/Header.template.php";
-        require_once($header);
-    }
-
-    //View footer
-    function footer_view($data=""){
-        $footer = "./app/src/Views/Templates/Footer.template.php";
-        require_once($footer);
-    }
-
     /*
     ####################################################################################
     ############################ HTTP METHOD VALIDATION ################################
@@ -79,33 +63,6 @@
     function Http_Method() {
         return file_get_contents("php://input");
     } 
-
-    /*
-    ####################################################################################
-    ############################ SESSION VALIDATION ####################################
-    ####################################################################################
-    */
-    function SessionExists(){
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (isset($_SESSION['login-successful'])) {
-            if ($_SESSION['userData']['id_user'] == 1) {
-                header('location: '.BASE_URL().'dashboard');
-            } else {
-                header('location: '.BASE_URL().'my');
-            }
-        }
-    }
-
-    function SessionNotExist(){
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        if (empty($_SESSION['login-successful'])) {
-            header('location: '.BASE_URL());
-        }
-    }
 
     /*
     ####################################################################################
@@ -183,5 +140,19 @@
         $string = substr($name, 0, 1).substr($lastname, 0, $lengthlastname).substr($time, 6, 4);
         $username = strtolower($string);
         return $username;
+    }
+
+    //Sesiones
+    function session() {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+    }
+
+    //Verify api key
+    function verifyApiKey() {
+        $headers = getallheaders();
+        $apiKey = str_replace('Bearer ', '', $headers['Api-Key'] ?? null);
+        return $apiKey == API_KEY ? true : false;
     }
 ?>
