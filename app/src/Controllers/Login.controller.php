@@ -40,8 +40,7 @@
                                     'status' => true, 
                                     'login' => true,
                                     'username' => $username, 
-                                    'roles' => $req_userRoles,
-                                    'jwt' => generateJWT($_SESSION['id_user'])
+                                    'roles' => $req_userRoles
                                 );
                             } else {
                                 $res = array(
