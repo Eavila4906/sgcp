@@ -16,7 +16,7 @@
                     $this->cell_phone = $_POST['cell_phone'];
                     $this->email = $_POST['email'];
                     $this->home_address = $_POST['home_address'];
-                    $this->rol = 4;
+                    $this->rol = 5;
                     $this->status = $_POST['status'];
 
                     if (empty($this->cell_phone) || empty($this->email) || empty($this->status)) {
