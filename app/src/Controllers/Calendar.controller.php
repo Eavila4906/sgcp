@@ -57,7 +57,7 @@
             die();
         }
 
-        // Doctor update function
+        // Calendar update function
         public function update() {
             if ($_POST) {
                 if (verifyApiKey()) {
@@ -112,7 +112,7 @@
             die();
         }
 
-        // Doctor delete function
+        // Calendar delete function
         public function delete() {
             if (Http_DELETE()) {
                 if (verifyApiKey()) {
