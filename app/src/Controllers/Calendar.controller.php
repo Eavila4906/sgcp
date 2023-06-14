@@ -4,7 +4,7 @@
             parent::__constructor();
         }
 
-        // New register doctor function
+        // New register calendar function
         public function create() {
             if ($_POST) {
                 if (verifyApiKey()) {
