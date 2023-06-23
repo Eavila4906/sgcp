@@ -34,8 +34,6 @@
                             $this->status
                         );
 
-                        
-
                         if ($req > 0) {
                             $roles = $this->model->getRoles();
                             foreach ($roles as $rol) {
