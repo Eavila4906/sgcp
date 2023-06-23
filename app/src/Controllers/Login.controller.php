@@ -39,6 +39,7 @@
                                 $res = array(
                                     'status' => true, 
                                     'login' => true,
+                                    'id_user' => $_SESSION['id_user'],
                                     'username' => $username, 
                                     'roles' => $req_userRoles
                                 );
