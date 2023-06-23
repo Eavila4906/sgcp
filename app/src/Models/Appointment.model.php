@@ -103,5 +103,31 @@
                       WHERE ap.id_appointment = $id_appointment";
             return $this->SelectMySQL($Query);
         }
+
+        // Accept appointment
+        public function acceptAppointment($id_appointment, $id_notification) {
+            $Query_appointment = "UPDATE appointment SET status=? WHERE id_appointment = $id_appointment";
+            $Array_appointment = array(2);
+            $req_appointment = $this->UpdateMySQL($Query_appointment, $Array_appointment);
+
+            $Query_notification = "UPDATE notification SET status=? WHERE id_notification = $id_notification";
+            $Array_notification = array(1);
+            $req_notification = $this->UpdateMySQL($Query_notification, $Array_notification);
+            $req_appointment && $req_notification ?  $res = 1 : $res = 0;
+            return $res;
+        }
+
+        // Deny appointment
+        public function denyAppointment($id_appointment, $id_notification) {
+            $Query_appointment = "UPDATE appointment SET status=? WHERE id_appointment = $id_appointment";
+            $Array_appointment = array(0);
+            $req_appointment = $this->UpdateMySQL($Query_appointment, $Array_appointment);
+
+            $Query_notification = "UPDATE notification SET status=? WHERE id_notification = $id_notification";
+            $Array_notification = array(4);
+            $req_notification = $this->UpdateMySQL($Query_notification, $Array_notification);
+            $req_appointment && $req_notification ?  $res = 1 : $res = 0;
+            return $res;
+        }
     }
 ?>

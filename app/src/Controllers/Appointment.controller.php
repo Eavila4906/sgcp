@@ -198,5 +198,81 @@
             }
             die();
         }
+
+        // Appointment accept function
+        public function acceptAppointment() {
+            if ($_POST) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_POST['id_appointment'];
+                    $this->id_notification = $_POST['id_notification'];
+
+                    if (empty($this->id_appointment) || empty($this->id_notification)) {
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'Appointment ID and notification required.'
+                        );
+                    } else {
+                        $req = $this->model->acceptAppointment($this->id_appointment, $this->id_notification);
+
+                        if ($req > 0) {
+                            $res = array(
+                                'status' => true, 
+                                'msg' => 'Appointment accepted successfully.'
+                            );
+                        } else {
+                            $res = array(
+                                'status' => false, 
+                                'msg' => 'This process could not be performed, please try again later.'
+                            ); 
+                        }
+                    }
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Appointment deny function
+        public function denyAppointment() {
+            if ($_POST) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_POST['id_appointment'];
+                    $this->id_notification = $_POST['id_notification'];
+
+                    if (empty($this->id_appointment) || empty($this->id_notification)) {
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'Appointment ID and notification required.'
+                        );
+                    } else {
+                        $req = $this->model->denyAppointment($this->id_appointment, $this->id_notification);
+
+                        if ($req > 0) {
+                            $res = array(
+                                'status' => true, 
+                                'msg' => 'appointment denied..'
+                            );
+                        } else {
+                            $res = array(
+                                'status' => false, 
+                                'msg' => 'This process could not be performed, please try again later.'
+                            ); 
+                        }
+                    }
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>
