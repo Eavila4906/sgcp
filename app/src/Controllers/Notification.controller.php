@@ -109,5 +109,43 @@
             }
             die();
         }
+
+        // Unique notifications user get function
+        public function get() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_notification = $_GET['id_notification'];
+                    $req = $this->model->get($this->id_notification);
+                    $res = array(
+                        'status' => true, 
+                        'data' => $req
+                    );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Unique notifications user get function
+        public function getNotificationsUser() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_user = $_GET['id_user'];
+                    $res = $this->model->getNotificationsUser($this->id_user);
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>

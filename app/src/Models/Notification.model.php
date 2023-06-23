@@ -21,7 +21,7 @@
         }
 
         public function createDetails($user, $notification) {
-            $Query = "INSERT INTO details_notification (user, notification) 
+            $Query = "INSERT INTO notification_details (user, notification) 
                         VALUES (?, ?)";
             $Array = array(
                 $user, $notification
@@ -42,10 +42,48 @@
 
         //Notification all get function
         public function getAll() {
-            $Query = "SELECT * 
-                      FROM details_notification dn INNER JOIN notification nt ON (dn.notification=nt.id_notification)
-                      INNER JOIN user us ON (dn.user=us.id_user) 
-                      WHERE nt.status != 0 ORDER BY dn.date ASC"; 
+            $Query = "SELECT nd.*, nt.* 
+                      FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification)
+                      INNER JOIN user us1 ON (nd.sending_user=us1.id_user) 
+                      INNER JOIN user us2 ON (nd.recipient_user=us2.id_user) 
+                      WHERE nt.status != 0 ORDER BY nd.date ASC"; 
+            return $this->SelectAllMySQL($Query);
+        }
+
+        // Unique notification get function
+        public function get($id_notification) {
+            $Query = "SELECT nt.id_notification, ap.id_appointment, ap.date AS date_appointment, ap.hour AS hour_appointment,
+                             CONCAT(us1.name, ' ', us1.lastname) AS sending_user,
+                             pr.cell_phone, pr.home_phone, us1.email,
+                             CONCAT(pt.name, ' ', pt.lastname) AS patient,
+                             CONCAT(us2.name, ' ', us2.lastname) AS recipient_user,
+                             CONCAT(us3.name, ' ', us3.lastname, ' - ', dc.specialty) AS doctor,
+                             nt.type, nt.description, nt.status, nd.date AS date_notification
+                        FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification) 
+                        INNER JOIN user us1 ON (nd.sending_user=us1.id_user) 
+                        INNER JOIN parents pr ON (pr.user=us1.id_user) 
+                        INNER JOIN user us2 ON (nd.recipient_user=us2.id_user)
+                        INNER JOIN appointment ap ON (nd.appointment=ap.id_appointment) 
+                        INNER JOIN patient pt ON (ap.patient=pt.id_patient)
+                        INNER JOIN doctor dc ON (ap.doctor=dc.id_doctor)
+                        INNER JOIN user us3 ON (dc.user=us3.id_user)
+                        WHERE nt.id_notification = $id_notification";
+
+            $Query_validate = "SELECT status FROM notification WHERE id_notification = $id_notification";
+            $req_validate = $this->SelectMySQL($Query_validate);
+            if ($req_validate['status'] == 3 || $req_validate['status'] == 2) {
+                $Query_seen_notification = "UPDATE notification SET status=? WHERE id_notification = $id_notification";
+                $Array_seen_notification = array(2);
+                $this->UpdateMySQL($Query_seen_notification, $Array_seen_notification);
+            }
+            return $this->SelectMySQL($Query);
+        }
+
+        // Unique notifications user get function
+        public function getNotificationsUser($id_user) {
+            $Query = "SELECT nd.id_notification_details, nt.id_notification, nt.type, nt.description, nt.status, nd.date
+                        FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification) 
+                        WHERE nd.recipient_user = $id_user AND nt.status !=0 ORDER BY nd.date ASC";
             return $this->SelectAllMySQL($Query);
         }
     }
