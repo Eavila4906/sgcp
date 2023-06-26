@@ -150,4 +150,22 @@
         $apiKey = str_replace('Bearer ', '', $headers['Api-Key'] ?? null);
         return $apiKey == API_KEY ? true : false;
     }
+
+    // Generate range of days per week
+    function generateWeekNumber($current_date) {
+        $numberWeek = date('W', strtotime($current_date));
+        $year = date('Y', strtotime($current_date));
+        $firstDay = date('Y-m-d', strtotime($current_date . " -" . (date('N', strtotime($current_date)) - 1) . " days"));
+        $lastDay = date('Y-m-d', strtotime($current_date . " +" . (7 - date('N', strtotime($current_date))) . " days"));
+        return "Week " . $numberWeek . " year " . $year;
+    }
+
+    // Generate range of days per week
+    function generateWeekRange($current_date) {
+        $numberWeek = date('W', strtotime($current_date));
+        $year = date('YYYY', strtotime($current_date));
+        $firstDay = date('Y-m-d', strtotime($current_date . " -" . (date('N', strtotime($current_date)) - 1) . " days"));
+        $lastDay = date('Y-m-d', strtotime($current_date . " +" . (7 - date('N', strtotime($current_date))) . " days"));
+        return $firstDay . " - " . $lastDay;
+    }
 ?>
