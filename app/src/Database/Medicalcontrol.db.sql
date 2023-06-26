@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `medicalcontrol` (
   `recipe` int(11) NOT NULL,
   `age_days` int(11) NOT NULL,
   `weight_kg` decimal(5, 2) NOT NULL,
-  `weight_lib` decimal(5, 2) NOT NULL,
+  `weight_pounds` decimal(5, 2) NOT NULL,
   `height_cm` decimal(5, 2) NOT NULL,
   `bmi_quant` decimal(5, 2) NOT NULL,
   `bmi_quali` varchar(15) NOT NULL,
