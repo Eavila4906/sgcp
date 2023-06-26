@@ -14,6 +14,8 @@ DROP TABLE IF EXISTS `calendar`;
 CREATE TABLE IF NOT EXISTS `calendar` (
   `id_calendar` int(11) NOT NULL AUTO_INCREMENT,
   `doctor` int(11) NOT NULL,
+  `week_number` varchar(20) NOT NULL,
+  `week_range` varchar(30) NOT NULL,
   `date` date NOT NULL,
   `start_time` time NOT NULL,
   `final_time` time NOT NULL,
