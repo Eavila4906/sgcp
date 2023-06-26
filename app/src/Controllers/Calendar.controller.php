@@ -13,6 +13,8 @@
                     $this->start_time = $_POST['start_time'];
                     $this->final_time = $_POST['final_time'];
                     $this->status = $_POST['status'];
+                    $this->week_number = generateWeekNumber($this->date);
+                    $this->week_range = generateWeekRange($this->date);
 
                     if (empty($this->id_doctor) ||  empty($this->date) || empty($this->start_time) || empty($this->final_time)) {
                         $res = array(
@@ -22,6 +24,8 @@
                     } else {
                         $calendarData = array(
                             'id_doctor' => $this->id_doctor,
+                            'week_number' => $this->week_number,
+                            'week_range' => $this->week_range,
                             'date' => $this->date,
                             'start_time' => $this->start_time,
                             'final_time' => $this->final_time,
@@ -67,6 +71,8 @@
                     $this->start_time = $_POST['start_time'];
                     $this->final_time = $_POST['final_time'];
                     $this->status = $_POST['status'];
+                    $this->week_number = generateWeekNumber($this->date);
+                    $this->week_range = generateWeekRange($this->date);
 
                     if (empty($this->id_calendar) || empty($this->id_doctor) ||  empty($this->date) 
                         || empty($this->start_time) || empty($this->final_time)) {
@@ -77,6 +83,8 @@
                     } else {
                         $calendarData = array(
                             'id_doctor' => $this->id_doctor,
+                            'week_number' => $this->week_number,
+                            'week_range' => $this->week_range,
                             'date' => $this->date,
                             'start_time' => $this->start_time,
                             'final_time' => $this->final_time,
@@ -175,6 +183,24 @@
                         'status' => true, 
                         'data' => $req
                     );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Unique calendar retrieval function according to the doctor
+        public function getCalendarForDoctor() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_doctor = $_GET['id_doctor'];
+                    $this->week_range = generateWeekRange($_GET['currentDate']);
+                    $res = $this->model->getCalendarForDoctor($this->id_doctor, $this->week_range);
                 } else {
                     $res = array(
                         'status' => false,
