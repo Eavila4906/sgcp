@@ -108,7 +108,7 @@
 
         // Unique parents get function
         public function get($id_parents) {
-            $Query = "SELECT us.username, ps.* FROM parents ps INNER JOIN user us ON (ps.user=us.id_user) WHERE id_parents = $id_parents";
+            $Query = "SELECT us.username, us.email, ps.* FROM parents ps INNER JOIN user us ON (ps.user=us.id_user) WHERE id_parents = $id_parents";
             return $this->SelectMySQL($Query);
         }
 
