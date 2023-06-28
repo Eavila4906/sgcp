@@ -241,5 +241,26 @@
             }
             die();
         }
+
+        // Unique doctor for user get function
+        public function getUniqueDoctor() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_user = $_GET['id_user'];
+                    $req = $this->model->getUniqueDoctor($this->id_user);
+                    $res = array(
+                        'status' => true, 
+                        'data' => $req
+                    );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>

@@ -98,6 +98,15 @@
             return $this->SelectMySQL($Query);
         }
 
+        // Unique doctor for user get function
+        public function getUniqueDoctor($id_user) {
+            $Query = "SELECT COUNT(dc.id_doctor) AS numberDoc, dc.id_doctor, 
+                             CONCAT(us.name, ' ', us.lastname) AS doctor, dc.specialty
+                      FROM doctor dc INNER JOIN user us ON (dc.user=us.id_user) 
+                      WHERE dc.user = $id_user";
+            return $this->SelectMySQL($Query);
+        }
+
         // Extract rol function
         public function getRoles() {
             $Query = "SELECT id_rol, rol FROM rol WHERE status = 1";
