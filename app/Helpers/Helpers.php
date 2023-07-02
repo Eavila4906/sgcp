@@ -168,4 +168,17 @@
         $lastDay = date('Y-m-d', strtotime($current_date . " +" . (7 - date('N', strtotime($current_date))) . " days"));
         return $firstDay . " - " . $lastDay;
     }
+
+    // Upload photo to server
+    function uploadPhotoServer(array $data, string $name){
+        $url_temp = $data['tmp_name'];
+        $destination = './app/Assets/Images/Medical-control/'.$name;        
+        $move = move_uploaded_file($url_temp, $destination);
+        return $move;
+    }
+
+    //delete image to server
+    function deletePhotoServer(String $name) {
+        unlink('./app/Assets/Images/Medical-control/'.$name);
+    }
 ?>
