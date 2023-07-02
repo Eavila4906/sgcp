@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS `medicalcontrol` (
   `bmi_quali` varchar(15) NOT NULL,
   `temperature` decimal(5, 2) DEFAULT NULL,
   `observation` varchar(100) DEFAULT '-',
-  `photo` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_medicalcontrol`),
   FOREIGN KEY (`appointment`) REFERENCES `appointment` (`id_appointment`),
   FOREIGN KEY (`recipe`) REFERENCES `recipe` (`id_recipe`)
