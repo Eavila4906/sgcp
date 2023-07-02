@@ -274,5 +274,117 @@
             }
             die();
         }
+
+        // Upload photo
+        public function uploadPhoto() {
+            if ($_POST) {
+                if (verifyApiKey()) {
+                    $this->appointment = $_POST['id_appointment'];
+                    $dataPhoto = $_FILES['photo'];
+                    $this->name = $dataPhoto['name'];
+                    $this->type = $dataPhoto['type'];
+                    $this->url_temp = $dataPhoto['tmp_name'];
+
+                    if($this->name == ''){
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'There is no photo to upload.'
+                        );
+                    } else if ($this->type != 'image/jpeg' && $this->type != 'image/jpg' && $this->type != 'image/png') {
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'The file is not valid! Valid formats: JPEG, JPG, PNG.'
+                        );
+                    } else {
+                        if (intval($this->appointment) > 0) {
+                            $photo = 'img_'.md5(date('d-m-Y H:m:s')).'.jpg';
+                            $res = $this->model->uploadPhoto($this->appointment, $photo);
+                        }
+
+                        if ($res > 0) {
+                            uploadPhotoServer($dataPhoto, $photo); 
+                            if ($_POST['current_photo'] != 'default_photo.ico') {
+                                deletePhotoServer($_POST['current_photo']);
+                            }
+
+                            $res = array(
+                                'status' => true, 
+                                'msg' => 'The photo was uploaded successfully.'
+                            );
+                        } else {
+                            $res = array('status' => false, 'msg' => 'Filed Register!');
+                        }
+                    }
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Photo delete function
+        public function deletePhoto() {
+            if (Http_DELETE()) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_GET['id_appointment'];
+
+                    if (empty($this->id_appointment)) {
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'Error! appointment ID is required.'
+                        );
+                    } else {
+                        $req = $this->model->deletePhoto($this->id_appointment, 'default_photo.ico');
+
+                        if ($req > 0) {
+                            $res = array(
+                                'status' => true, 
+                                'msg' => 'Photo deleted successfully.'
+                            );
+                            if ($_GET['current_photo'] != 'default_photo.ico') {
+                                deletePhotoServer($_GET['current_photo']);
+                            }
+                        } else {
+                            $res = array(
+                                'status' => false, 
+                                'msg' => 'This process could not be performed, please try again later.'
+                            ); 
+                        }
+                    }
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Parents get function
+        public function getParents() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_GET['id_appointment'];
+                    $req = $this->model->getParents($this->id_appointment);
+                    $res = array(
+                        'status' => true, 
+                        'data' => $req
+                    );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>
