@@ -129,5 +129,34 @@
             $req_appointment && $req_notification ?  $res = 1 : $res = 0;
             return $res;
         }
+
+        // Upload photo
+        public function uploadPhoto($appointment, $photo){
+            $Query = "UPDATE appointment SET photo=? WHERE id_appointment = $appointment";
+            $Array = array($photo);
+            $req = $this->UpdateMySQL($Query, $Array);
+            $req ?  $res = 1 : $res = 0;
+
+            return $res;
+        }
+
+        // Photo delete function
+        public function deletePhoto($id_appointment, $photo) {
+            $Query = "UPDATE appointment SET photo=? WHERE id_appointment = $id_appointment";
+            $Array = array($photo);
+            $req = $this->UpdateMySQL($Query, $Array);
+            $req ?  $res = 1 : $res = 0;
+            return $res;
+        }
+
+        // Parents get function
+        public function getParents($id_appointment) {
+            $Query = "SELECT CONCAT(pr.father_name, ' ', pr.father_lastname) AS father, 
+                             CONCAT(pr.mother_name, ' ', pr.mother_lastname) AS mother
+                      FROM appointment ap INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
+                      INNER JOIN parents pr ON (pt.parents=pr.id_parents)
+                      WHERE ap.id_appointment = $id_appointment";
+            return $this->SelectMySQL($Query);
+        }
     }
 ?>
