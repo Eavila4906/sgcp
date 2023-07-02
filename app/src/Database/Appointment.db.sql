@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `appointment` (
   `date` date NOT NULL,
   `hour` time NOT NULL,
   `description` varchar(45) DEFAULT '-',
+  `photo` varchar(100) DEFAULT 'default-photo.ico',
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id_appointment`),
   FOREIGN KEY (`doctor`) REFERENCES `doctor` (`id_doctor`),
