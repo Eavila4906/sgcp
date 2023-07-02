@@ -5,71 +5,70 @@
         }
 
         // New register medicalcontrol function
-        public function create($appointmentData) {
-            $doctor = $appointmentData['doctor'];
-            $patient = $appointmentData['patient'];
-            $date = $appointmentData['date'];
-            $hour = $appointmentData['hour'];
-            $description = $appointmentData['description'];
-            $status = $appointmentData['status'];
+        public function createRecipe($recipeData) {
+            $medication = $recipeData['medication'];
+            $indication = $recipeData['indication'];
+            $status = 1;
 
-            $Query_v_calendar = "SELECT * FROM calendar 
-                               WHERE date = '$date' AND start_time >= '$hour' AND 'final_time' =< '$hour' 
-                               AND doctor = $doctor";
-            $req_v_calendar = $this->SelectAllMySQL($Query_v_calendar);
+            $Query = "INSERT INTO recipe (medication, indication, status) VALUES (?, ?, ?)";
+            $Array = array($medication, $indication, $status);
+            $req = $this->InsertMySQL($Query, $Array);
+            $req ?  $res = $req : $res = 0;
 
-            $Query_validate = "SELECT * FROM appointment 
-                               WHERE date = '$date' AND hour = '$hour' AND status != 0";
-            $req_validate = $this->SelectAllMySQL($Query_validate);
+            return $res;
+        }
 
-            if (empty($req_v_calendar)) {
-                $res = '!exists';
-            } else if (!empty($req_validate)) {
-                $res = 'exists';
-            } else {
-                $Query = "INSERT INTO appointment (doctor, patient, date, hour, description, status) 
-                          VALUES (?, ?, ?, ?, ?, ?)";
-                $Array = array(
-                    $doctor, $patient, $date, $hour, $description, $status
-                );
-                $req = $this->InsertMySQL($Query, $Array);
-                $req ?  $res = $req : $res = 0;
-            }
+        public function create($medicalcontrolData) {
+            $appointment = $medicalcontrolData['appointment'];
+            $recipe = $medicalcontrolData['recipe'];
+            $age_days = $medicalcontrolData['age_days'];
+            $weight_kg = $medicalcontrolData['weight_kg'];
+            $weight_pounds = $medicalcontrolData['weight_pounds'];
+            $height_cm = $medicalcontrolData['height_cm'];
+            $bmi_quant = $medicalcontrolData['bmi_quant'];
+            $bmi_quali = $medicalcontrolData['bmi_quali'];
+            $temperature = $medicalcontrolData['temperature'];
+            $observation = $medicalcontrolData['observation'];
+
+            $Query = "INSERT INTO medicalcontrol (appointment, recipe, age_days, weight_kg, weight_pounds, height_cm, bmi_quant, bmi_quali, temperature, observation) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $Array = array(
+                $appointment, $recipe, $age_days, $weight_kg, $weight_pounds, $height_cm, $bmi_quant,
+                $bmi_quali, $temperature, $observation
+            );
+            $req = $this->InsertMySQL($Query, $Array);
+            $req ?  $res = $req : $res = 0;
 
             return $res;
         }
 
         // Medicalcontrol update function
-        public function update($id_appointment, $appointmentData) {
-            $doctor = $appointmentData['doctor'];
-            $patient = $appointmentData['patient'];
-            $date = $appointmentData['date'];
-            $hour = $appointmentData['hour'];
-            $description = $appointmentData['description'];
-            $status = $appointmentData['status'];
+        public function update($medicalcontrolData) {
+            $appointment = $medicalcontrolData['appointment'];
+            $recipe = $medicalcontrolData['recipe'];
+            $age_days = $medicalcontrolData['age_days'];
+            $weight_kg = $medicalcontrolData['weight_kg'];
+            $weight_pounds = $medicalcontrolData['weight_pounds'];
+            $height_cm = $medicalcontrolData['height_cm'];
+            $bmi_quant = $medicalcontrolData['bmi_quant'];
+            $bmi_quali = $medicalcontrolData['bmi_quali'];
+            $temperature = $medicalcontrolData['temperature'];
+            $observation = $medicalcontrolData['observation'];
+            $medication = $medicalcontrolData['medication'];
+            $indication = $medicalcontrolData['indication'];
 
-            $Query_v_calendar = "SELECT * FROM calendar 
-                               WHERE date = '$date' AND start_time >= '$hour' AND 'final_time' =< '$hour' 
-                               AND doctor = $doctor";
-            $req_v_calendar = $this->SelectAllMySQL($Query_v_calendar);
+            $Query = "UPDATE medicalcontrol mc INNER JOIN recipe re ON (mc.recipe=re.id_recipe) 
+                      SET mc.appointment=?, mc.recipe=?, mc.age_days=?, mc.weight_kg=?, mc.weight_pounds=?, 
+                          mc.height_cm=?, mc.bmi_quant=?, mc.bmi_quali=?, mc.temperature=?, mc.observation=?, 
+                          re.medication=?, re.indication=?
+                      WHERE mc.appointment = $appointment";
+            $Array = array(
+                $appointment, $recipe, $age_days, $weight_kg, $height_cm, $bmi_quant, $bmi_quali,
+                $temperature, $observation, $medication, $indication
+            );
+            $req = $this->UpdateMySQL($Query, $Array);
+            $req ?  $res = 1 : $res = 0;
 
-            $Query_validate = "SELECT * FROM appointment 
-                               WHERE date = '$date' AND hour = '$hour' AND status != 0";
-            $req_validate = $this->SelectAllMySQL($Query_validate);
-
-            if (empty($req_v_calendar)) {
-                $res = '!exists';
-            } else if (!empty($req_validate)) {
-                $res = 'exists';
-            } else {
-                $Query = "UPDATE appointment SET doctor=?, patient=?, date=?, hour=?, description=?, status=? 
-                          WHERE id_appointment = $id_appointment";
-                $Array = array(
-                    $doctor, $patient, $date, $hour, $description, $status
-                );
-                $req = $this->UpdateMySQL($Query, $Array);
-                $req ?  $res = 1 : $res = 0;
-            }
             return $res;
         }
 
