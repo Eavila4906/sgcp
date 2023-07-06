@@ -8,17 +8,19 @@
         public function create() {
             if ($_POST) {
                 if (verifyApiKey()) {
-                    $this->id_user = $_POST['id_user'];
+                    $this->sending_user = $_POST['sending_user'];
+                    $this->appointment = $_POST['appointment'];
                     $this->type = $_POST['type'];
                     $this->description = $_POST['description'];
-                    $this->status = 1;
+                    $this->status = 3;
 
-                    if (empty($this->id_user) ||  empty($this->type) || empty($this->description)) {
+                    if (empty($this->sending_user) ||  empty($this->type) || empty($this->description)) {
                         $res = array(
                             'status' => false, 
                             'msg' => 'All fields are required.'
                         );
                     } else {
+                        
                         $notificationData = array(
                             'type' => $this->type,
                             'description' => $this->description,
@@ -27,7 +29,17 @@
                         $req_id_notification = $this->model->create($notificationData);
 
                         if ($req_id_notification > 0) {
-                            $req = $this->model->createDetails($this->id_user, $req_id_notification);
+                            $req_secretary = $this->model->getSecretary();
+
+                            for ($i=0; $i < count($req_secretary); $i++) { 
+                                $notificationDetailsData = array(
+                                    'sending_user' => $this->sending_user,
+                                    'recipient_user' => $req_secretary[$i]['id_user'],
+                                    'notification' => $req_id_notification,
+                                    'appointment' => $this->appointment
+                                );
+                                $req = $this->model->createDetails($notificationDetailsData);
+                            }
                             if ($req) {
                                 $res = array(
                                     'status' => true, 

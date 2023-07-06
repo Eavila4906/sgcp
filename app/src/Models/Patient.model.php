@@ -94,5 +94,21 @@
                       WHERE pt.id_patient = $id_patient";
             return $this->SelectMySQL($Query);
         }
+
+        // Patient all get function for parents
+        public function getPatientsForParents($id_user) {
+            $Query = "SELECT pt.id_patient, CONCAT(pt.name, ' ', pt.lastname) AS patient 
+                        FROM parents pr INNER JOIN patient pt ON (pt.parents=pr.id_parents) 
+                        WHERE pr.user = $id_user AND pt.status = 1"; 
+            return $this->SelectAllMySQL($Query);
+        }
+
+        // Appointment get function for patient
+        public function getAppointmentsForPatient($id_patient) {
+            $Query = "SELECT pt.id_patient, CONCAT(pt.name, ' ', pt.lastname) AS patient, ap.* 
+                        FROM patient pt INNER JOIN appointment ap ON (ap.patient=pt.id_patient)
+                        WHERE pt.id_patient = $id_patient AND ap.status != 0"; 
+            return $this->SelectAllMySQL($Query);
+        }
     }
 ?>

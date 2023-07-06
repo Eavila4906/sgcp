@@ -19,7 +19,8 @@
             $req_v_calendar = $this->SelectAllMySQL($Query_v_calendar);
 
             $Query_validate = "SELECT * FROM appointment 
-                               WHERE status = 2 AND (date = '$date' AND hour = '$hour') AND patient = $patient";
+                               WHERE (status = 2 OR status = 3) AND 
+                               (date = '$date' AND hour = '$hour')";
             $req_validate = $this->SelectAllMySQL($Query_validate);
 
             if (empty($req_v_calendar)) {

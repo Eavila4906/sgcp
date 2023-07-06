@@ -211,5 +211,39 @@
             }
             die();
         }
+ 
+        // Patients all get function for parents
+        public function getPatientsForParents() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_user = $_GET['id_user'];
+                    $res = $this->model->getPatientsForParents($this->id_user);
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Appointments all get function for patient
+        public function getAppointmentsForPatient() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_patient = $_GET['id_patient'];
+                    $res = $this->model->getAppointmentsForPatient($this->id_patient);
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>

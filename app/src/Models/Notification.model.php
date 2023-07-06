@@ -20,11 +20,16 @@
             return $res;
         }
 
-        public function createDetails($user, $notification) {
-            $Query = "INSERT INTO notification_details (user, notification) 
-                        VALUES (?, ?)";
+        public function createDetails($notificationDetailsData) {
+            $sending_user = $notificationDetailsData['sending_user'];
+            $recipient_user = $notificationDetailsData['recipient_user'];
+            $notification = $notificationDetailsData['notification'];
+            $appointment = $notificationDetailsData['appointment'];
+
+            $Query = "INSERT INTO notification_details (sending_user, recipient_user, notification, appointment) 
+                        VALUES (?, ?, ?, ?)";
             $Array = array(
-                $user, $notification
+                $sending_user, $recipient_user, $notification, $appointment
             );
             $req = $this->InsertMySQL($Query, $Array);
             $req ?  $res = $req : $res = 0;
@@ -84,6 +89,16 @@
             $Query = "SELECT nd.id_notification_details, nt.id_notification, nt.type, nt.description, nt.status, nd.date
                         FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification) 
                         WHERE nd.recipient_user = $id_user AND nt.status !=0 ORDER BY nd.date ASC";
+            return $this->SelectAllMySQL($Query);
+        }
+
+        // Secretary all get function
+        public function getSecretary() {
+            $Query = "SELECT us.id_user 
+                        FROM user_roles ur 
+                        INNER JOIN user us 
+                        ON (ur.user=us.id_user) 
+                        WHERE ur.rol = 3 AND ur.status = 1"; 
             return $this->SelectAllMySQL($Query);
         }
     }

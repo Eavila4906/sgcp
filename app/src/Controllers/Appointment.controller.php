@@ -34,7 +34,8 @@
                         if ($req > 0) {
                             $res = array(
                                 'status' => true, 
-                                'msg' => 'Successfully registered appointment.'
+                                'msg' => 'Successfully registered appointment.',
+                                'id_appointment' => $req
                             ); 
                         } else if ($req == '!exists') {
                             $res = array(
