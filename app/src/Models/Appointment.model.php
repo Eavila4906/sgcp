@@ -153,9 +153,12 @@
         // Parents get function
         public function getParents($id_appointment) {
             $Query = "SELECT CONCAT(pr.father_name, ' ', pr.father_lastname) AS father, 
-                             CONCAT(pr.mother_name, ' ', pr.mother_lastname) AS mother
-                      FROM appointment ap INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
+                             CONCAT(pr.mother_name, ' ', pr.mother_lastname) AS mother,
+                             CONCAT(us.name, ' ', us.lastname) AS representative
+                      FROM appointment ap 
+                      INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
                       INNER JOIN parents pr ON (pt.parents=pr.id_parents)
+                      INNER JOIN user us ON (pr.user=us.id_user)
                       WHERE ap.id_appointment = $id_appointment";
             return $this->SelectMySQL($Query);
         }
