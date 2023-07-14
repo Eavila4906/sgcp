@@ -34,12 +34,14 @@
                                 $req_userRoles = $this->model->SelectRolesUser($_SESSION['id_user']);
 
                                 $_SESSION['userData'] = $req_userData;
+                                $user = $req_userData['user'];
                                 $username = $req_userData['username'];
 
                                 $res = array(
                                     'status' => true, 
                                     'login' => true,
                                     'id_user' => $_SESSION['id_user'],
+                                    'user' => $user, 
                                     'username' => $username, 
                                     'roles' => $req_userRoles
                                 );
