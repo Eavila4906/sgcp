@@ -13,7 +13,8 @@
         }
 
         public function sessionUser(int $id_user) {
-            $Query_Select = "SELECT u.id_user, u.username, u.email, u.status
+            $Query_Select = "SELECT u.id_user, u.username, u.email, u.status,
+                                    CONCAT(u.name, ' ', u.lastname) AS user
                             FROM user u 
                             WHERE u.id_user = $id_user";
             $res = $this->SelectMySQL($Query_Select);
