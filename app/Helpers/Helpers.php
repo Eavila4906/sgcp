@@ -131,8 +131,7 @@
 
     // Username Generator
     function usernameGenerator(String $name, String $lastname, String $time) {
-        $lengthlastname = strlen($lastname);
-        $string = substr($name, 0, 1).substr($lastname, 0, $lengthlastname).substr($time, 6, 4);
+        $string = '@'.substr($name, 0, 3).substr($lastname, 0, 3).substr($time, 6, 4);
         $username = strtolower($string);
         return $username;
     }
