@@ -12,6 +12,9 @@
             $lastname = $patientData['lastname'];
             $birthdate = $patientData['birthdate'];
             $sex = $patientData['sex'];
+            $weight_kg = $patientData['weight_kg'];
+            $weight_pounds = $patientData['weight_pounds'];
+            $height = $patientData['height'];
             $blood_type = $patientData['blood_type'];
             $family_obs = $patientData['family_obs'];
             $personal_obs = $patientData['personal_obs'];
@@ -24,10 +27,11 @@
             if (!empty($req_validate)) {
                 $res = 'exists';
             } else {
-                $Query = "INSERT INTO patient (parents, dni, name, lastname, birthdate, sex, blood_type, family_obs, personal_obs, general_obs, status) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $Query = "INSERT INTO patient (parents, dni, name, lastname, birthdate, sex, weight_kg, weight_pounds, height, blood_type, family_obs, personal_obs, general_obs, status) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $Array = array(
-                    $parents, $dni, $name, $lastname, $birthdate, $sex, $blood_type, $family_obs, $personal_obs, 
+                    $parents, $dni, $name, $lastname, $birthdate, $sex, $weight_kg, $weight_pounds,
+                    $height, $blood_type, $family_obs, $personal_obs, 
                     $general_obs, $status
                 );
                 $req = $this->InsertMySQL($Query, $Array);
@@ -43,6 +47,9 @@
             $lastname = $patientData['lastname'];
             $birthdate = $patientData['birthdate'];
             $sex = $patientData['sex'];
+            $weight_kg = $patientData['weight_kg'];
+            $weight_pounds = $patientData['weight_pounds'];
+            $height = $patientData['height'];
             $blood_type = $patientData['blood_type'];
             $family_obs = $patientData['family_obs'];
             $personal_obs = $patientData['personal_obs'];
@@ -57,11 +64,13 @@
             if (!empty($req_validate)) {
                 $res = 'exists';
             } else {
-                $Query = "UPDATE patient SET dni=?, name=?, lastname=?, birthdate=?, sex=?,
-                                 blood_type=?, family_obs=?, personal_obs=?, general_obs=?, status=? WHERE id_patient = $id_patient";
+                $Query = "UPDATE patient SET dni=?, name=?, lastname=?, birthdate=?, sex=?, 
+                                 weight_kg=?, weight_pounds=?, height=?, blood_type=?, family_obs=?, 
+                                 personal_obs=?, general_obs=?, status=? 
+                          WHERE id_patient = $id_patient";
                 $Array = array(
-                    $dni, $name, $lastname, $birthdate, $sex, $blood_type, $family_obs, $personal_obs, 
-                    $general_obs, $status
+                    $dni, $name, $lastname, $birthdate, $sex, $weight_kg, $weight_pounds,
+                    $height, $blood_type, $family_obs, $personal_obs, $general_obs, $status
                 );
                 $req = $this->UpdateMySQL($Query, $Array);
                 $req ?  $res = 1 : $res = 0;
@@ -71,26 +80,41 @@
 
         // Patient delete function
         public function delete($id_patient, $status) {
-            $Query = "UPDATE patient SET status=? WHERE id_patient = $id_patient";
-            $Array = array($status);
-            $req = $this->UpdateMySQL($Query, $Array);
-            $req ?  $res = 1 : $res = 0;
+            $Query_validate = "SELECT * FROM appointment WHERE patient = '$id_patient' AND status != 0";
+            $req_validate = $this->SelectAllMySQL($Query_validate);
+
+            if (!empty($req_validate)) {
+                $res = "exists";
+            } else {
+                $Query = "UPDATE patient SET status=? WHERE id_patient = $id_patient";
+                $Array = array($status);
+                $req = $this->UpdateMySQL($Query, $Array);
+                $req ?  $res = 1 : $res = 0;
+            }
             return $res;
         }
 
         // Patient all get function
         public function getAll() {
             $Query = "SELECT CONCAT(ps.father_name, ' ', ps.father_lastname) AS father, 
-                             CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother, pt.* 
-                      FROM patient pt INNER JOIN parents ps ON (pt.parents=ps.id_parents) WHERE pt.status != 0"; 
+                             CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother,
+                             CONCAT(pt.name, ' ', pt.lastname) AS patient, pt.* 
+                      FROM patient pt 
+                      INNER JOIN parents ps ON (pt.parents=ps.id_parents) 
+                      INNER JOIN user us ON (ps.user=us.id_user) 
+                      WHERE pt.status != 0"; 
             return $this->SelectAllMySQL($Query);
         }
 
         // Unique patient get function
         public function get($id_patient) {
             $Query = "SELECT CONCAT(ps.father_name, ' ', ps.father_lastname) AS father, 
-                             CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother, pt.*
-                      FROM patient pt INNER JOIN parents ps ON (pt.parents=ps.id_parents) 
+                             CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother, 
+                             CONCAT(us.name, ' ', us.lastname) AS representative,
+                             CONCAT(pt.name, ' ', pt.lastname) AS patient, pt.* 
+                      FROM patient pt 
+                      INNER JOIN parents ps ON (pt.parents=ps.id_parents) 
+                      INNER JOIN user us ON (ps.user=us.id_user) 
                       WHERE pt.id_patient = $id_patient";
             return $this->SelectMySQL($Query);
         }
