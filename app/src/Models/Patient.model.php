@@ -102,7 +102,7 @@
                       FROM patient pt 
                       INNER JOIN parents ps ON (pt.parents=ps.id_parents) 
                       INNER JOIN user us ON (ps.user=us.id_user) 
-                      WHERE pt.status != 0"; 
+                      WHERE pt.status != 0 ORDER BY pt.id_patient DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 

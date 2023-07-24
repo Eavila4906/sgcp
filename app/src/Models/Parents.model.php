@@ -119,7 +119,7 @@
 
         // Parents all get function
         public function getAll() {
-            $Query = "SELECT * FROM parents WHERE status != 0"; 
+            $Query = "SELECT * FROM parents WHERE status != 0 ORDER BY id_parents DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 
