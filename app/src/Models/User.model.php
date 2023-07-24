@@ -67,8 +67,10 @@
         // Users all get function
         public function getAll() {
             $Query = "SELECT us.id_user, us.username, us.email, GROUP_CONCAT(rl.rol SEPARATOR ', ') AS rol, us.status 
-                      FROM user_roles ur INNER JOIN user us ON (us.id_user=ur.user)
-                      INNER JOIN rol rl ON (rl.id_rol=ur.rol) WHERE ur.status != 0 AND us.status != 0 GROUP BY us.username";
+                      FROM user_roles ur 
+                      INNER JOIN user us ON (us.id_user=ur.user)
+                      INNER JOIN rol rl ON (rl.id_rol=ur.rol) 
+                      WHERE ur.status != 0 AND us.status != 0 GROUP BY us.username ORDER BY us.id_user DESC";
             return $this->SelectAllMySQL($Query);
         }
 
@@ -103,6 +105,28 @@
         public function deleteUserRoles($id_user) {
             $Query = "DELETE FROM user_roles WHERE user = $id_user";
             return $this->DeleteMySQL($Query);
+        }
+
+        //Change user password function
+        public function ChangePassword($dataChangePassword){
+            $id_user = $dataChangePassword['id_user'];
+            $current_password = $dataChangePassword['current_password'];
+            $new_password = $dataChangePassword['new_password'];
+
+            $Query_validate = "SELECT * FROM user 
+                               WHERE id_user = $id_user AND password = '$current_password'";
+            $req_validate = $this->SelectAllMySQL($Query_validate);
+
+            if (empty($req_validate)) {
+                $res = 'NotPassword';
+            } else {
+                $Query = "UPDATE user SET password=? WHERE id_user = $id_user";
+                $Array = array($new_password);
+                $req = $this->UpdateMySQL($Query, $Array);
+                $req ?  $res = $req : $res = 0;
+            }
+            
+            return $res;
         }
     }
 ?>
