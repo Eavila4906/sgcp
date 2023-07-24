@@ -321,5 +321,63 @@
             }
             die();
         }
+
+        // Change user password function
+        public function ChangePassword() {
+            if ($_POST) {
+                if (verifyApiKey()) {
+                    $this->id_user = $_POST['id_user'];
+                    $this->current_password = hash('SHA256', $_POST['current_password']);
+                    $this->new_password = $_POST['new_password'];
+                    $this->conf_password = $_POST['conf_password'];
+
+                    if (empty($this->id_user) || empty($this->current_password) 
+                        || empty($this->new_password) || empty($this->conf_password)) {
+                        $res = array(
+                            'status' => false, 
+                            'msg' => 'All fields are required.'
+                        );
+                    } else {
+                        if ($this->new_password != $this->conf_password) {
+                            $res = array(
+                                'status' => false, 
+                                'msg' => 'The new password does not match the confirmation of the same.'
+                            );
+                        } else {
+                            $dataChangePassword = array(
+                                'id_user' => $this->id_user,
+                                'current_password' => $this->current_password,
+                                'new_password' => hash("SHA256", $this->new_password)
+                            );
+                            $req = $this->model->ChangePassword($dataChangePassword);
+                            
+                            if ($req > 0) {
+                                $res = array(
+                                    'status' => true, 
+                                    'msg' => 'Password changed successfully.'
+                                );
+                            } else if ($req == 'NotPassword') {
+                                $res = array(
+                                    'status' => false, 
+                                    'msg' => 'This process could not be performed, The current password does not match the one registered in the database.'
+                                ); 
+                            } else {
+                                $res = array(
+                                    'status' => false, 
+                                    'msg' => 'This process could not be performed, please try again later.'
+                                ); 
+                            }
+                        }
+                    }
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
     }
 ?>
