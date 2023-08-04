@@ -1,0 +1,63 @@
+.image-and-content {
+    text-align: center;
+}
+.float-left {
+    float: left;
+    margin-right: 10px;
+}
+.image-size {
+    width: 90px;
+    height: auto;
+    float: left;
+    margin-right: 0.5px;
+}
+.ml-lg {
+    margin-left: 20px;
+}
+.image-size-m {
+    width: 110px;
+    height: auto;
+    float: left;
+    margin-right: 0.5px;
+}
+.font-time {
+font-family: "Times New Roman", Times, serif;
+}
+.line-s {
+    line-height: 0.0;
+}
+.line-m {
+    line-height: 0.5;
+}
+.blod-font {
+    font-weight: bold;
+}
+.font-s14 {
+    font-size: 14pt;
+}
+.font-s12 {
+    font-size: 12pt;
+}
+.font-s11 {
+    font-size: 11pt;
+}
+.font-s10 {
+    font-size: 10pt;
+}
+.font-s9 {
+    font-size: 9pt;
+}
+.content {
+    min-height: 460px;
+    max-height: 470px;
+    position: relative;
+}
+.watermark {
+    position: absolute;
+    top: 15%;
+    left: 30%;
+    width: 300px;
+    height: 300px;
+    opacity: 0.5;
+    z-index: -1;
+}
