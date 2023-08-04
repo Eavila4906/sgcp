@@ -4,45 +4,184 @@
     class PDF extends TCPDF {
         public function Header() {
             $image_file = './app/Libraries/Reports/TcPDF/examples/images/logo.png';
-            $this->Image($image_file, 10, 2, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+            $this->Image($image_file, 25, 7, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
             $this->SetY(10);
 
             $this->SetFont('times', 'B', 12);
-            $this->SetX(40); 
-            $this->Cell(0, 10, 'Consultorio "Dr. Jhonny Hidalgo Palacios"', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+            $this->SetX(55); 
+            $this->Cell(0, 10, 'Dr. Jhonny Hidalgo Palacios', 0, false, 'L', 0, '', 0, false, 'M', 'M');
             $this->Ln(5);
             $this->SetFont('times', '', 11);
-            $this->SetX(40); 
-            $this->Cell(0, 10, 'Centro de pediatría y neonatología', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+            $this->SetX(55); 
+            $this->Cell(0, 10, 'Pediatra - Neonatólogo', 0, false, 'L', 0, '', 0, false, 'M', 'M');
             $this->Ln(5);
-
-            $this->SetFont('times', '', 10);
-            $this->SetX(40); 
-            $this->Cell(0, 10, 'Fecha: ' . date('Y-m-d H:i:s'), 0, false, 'L', 0, '', 0, false, 'M', 'M');
+            $this->SetFont('times', '', 11);
+            $this->SetX(55); 
+            $this->Cell(0, 10, 'E-mail: jhonnyr_dr@hotmail.com', 0, false, 'L', 0, '', 0, false, 'M', 'M');
+            $this->Ln(5);
+            $this->SetFont('times', '', 11);
+            $this->SetX(55); 
+            $this->Cell(0, 10, 'Contactos: 0994441106 - 0999787684', 0, false, 'L', 0, '', 0, false, 'M', 'M');
             $this->Ln(8);
 
             $this->SetLineWidth(0.3);
-            $this->Line(10, $this->getY(), $this->getPageWidth() - 10, $this->getY()); 
+            $this->Line(25.4, $this->getY(), $this->getPageWidth() - 25.4, $this->getY()); 
             $this->Ln(5);
         }
 
         public function Footer() {
             $this->SetY(-18); 
             $this->SetLineWidth(0.2); 
-            $this->Line(10, $this->getY(), $this->getPageWidth() - 10, $this->getY());
+            $this->Line(24.5, $this->getY(), $this->getPageWidth() - 24.5, $this->getY());
             
             $this->SetY(-18);
             $this->SetFont('times', 'I', 8);
-            $this->Cell(0, 10, 'Contactos: 0999787684', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            $this->Cell(0, 10, 'Dirección: Pedro Gual y 18 de Octubre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
             $this->SetY(-15);
             $this->SetFont('times', 'I', 8);
-            $this->Cell(0, 10, 'Dirección: Pedro Gual y 18 de Octubre', 0, false, 'L', 0, '', 0, false, 'T', 'M');
+            $this->Cell(0, 10, 'Fecha: ' . date('Y-m-d H:i:s'), 0, false, 'L', 0, '', 0, false, 'T', 'M');
             $this->SetY(-18);
             $this->SetFont('times', 'I', 8);
             $this->Cell(0, 10, "Página " . $this->getAliasNumPage() . "/" . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
         }
     }
-    
+
+    // Report patients list
+    function rptPatientList($data) {
+        // Crear instancia de TCPDF
+        $pdf = new PDF('P', 'mm', PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        // Establecer información del documento
+        $pdf->SetTitle('Lista de pacientes');
+        
+        // set margins
+        $margin_left = 25.4; 
+        $margin_top = 45.4;
+        $margin_right = 25.4;
+        $margin_bottom = 25.4;
+        $pdf->SetMargins($margin_left, $margin_top, $margin_right);
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(10);
+        // set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, 10);
+        
+        // Inicializar variable para almacenar el contenido de la tabla
+        $table_content = '';
+        $max_registers = 20;
+        $total_registers = count($data);
+        // Datos de ejemplo para los registros
+        if ($total_registers == 0) {
+            $pdf->AddPage();
+            $pdf->writeHTML('<h1>NO HAY REGISTROS</h1>', true, false, true, false, '');
+        }
+        for ($i=0; $i < count($data); $i++) {
+            // Datos de ejemplo para cada registro
+            $id = $i+1;
+            $dni = $data[$i]['dni'];
+            $patient = $data[$i]['patient'];
+            $age = $data[$i]['age'];
+            $sex = $data[$i]['sex'] == 'M' ? 'Masculino' : 'Femenino';
+        
+            // Agregar una fila con los datos de cada registro a la variable $contenido_tabla
+            $table_content .= '<tr>
+                <td class="cell-sm text-center">'.$id.'</td>
+                <td class="cell-md text-center">'.$dni.'</td>
+                <td class="cell-xl">'.$patient.'</td>
+                <td class="cell-md text-center">'.$age.'</td>
+                <td class="cell-md text-center">'.$sex.'</td>
+            </tr>';
+            
+            // Si se ha alcanzado el límite de registros por página, generar una nueva página
+            if (($i + 1) % $max_registers == 0 || ($i + 1) == $total_registers) {
+                // Establecer una nueva página si no es la primera iteración
+                if ($table_content != '') {
+                    $pdf->AddPage();
+                }
+        
+                // Establecer el contenido de la plantilla en la nueva página
+                $template = '
+                    <style>
+                        .text-center {
+                            text-align: center;
+                        }
+                        .font-s14 {
+                            font-size: 14pt;
+                        }
+                        .font-s12 {
+                            font-size: 12pt;
+                        }
+                        .font-time {
+                            font-family: "Times New Roman", Times, serif;
+                        }
+                        .blod-font {
+                            font-weight: bold;
+                        }
+                        .b-header {
+                            background-color: #78a7ff;
+                        }
+                        .cell-header {
+                            height: 30px;
+                        }
+                        .cell-sm {
+                            width: 10%;
+                        }
+                        .cell-md {
+                            width: 20%;
+                        }
+                        .cell-lg {
+                            width: 30%;
+                        }
+                        .cell-xl {
+                            width: 40%;
+                        }
+                        table {
+                            width: 100%;
+                            border: 0.5px solid #000;
+
+                            vertical-align: middle;
+                            line-height: 25px;
+                        }
+                        tr th {
+                            text-align: center;
+                        }
+                        th, td {
+                            margin-left: 10px;
+                            border: 0.2px solid #000;
+                        }    
+                    </style>
+
+                    <h3 class="font-time">LISTA DE PACIENTE</h3>
+                    <table class="font-time">
+                        <tr class="font-s14">
+                            <th class="b-header cell-header cell-sm blod-font">ID</th>
+                            <th class="b-header cell-md blod-font">CEDULA</th>
+                            <th class="b-header cell-xl blod-font">PACIENTE</th>
+                            <th class="b-header cell-md blod-font">EDAD</th>
+                            <th class="b-header cell-md blod-font">SEXO</th>
+                        </tr>
+                        <tbody class="font-s12">
+                            ' . $table_content . '
+                        </tbody>
+                    </table>
+                ';
+        
+                // Imprimir el contenido en el PDF
+                $pdf->writeHTML($template, true, false, true, false, '');
+        
+                // Reiniciar la variable para la siguiente página
+                $table_content = '';
+            } 
+
+
+        }
+
+        
+        
+        // Generar el PDF
+        $pdf->Output('Lista de pacientes.pdf', 'I');
+    }
+
+    // Report data personal patient
     function rptPatient($data) {
         // create new PDF document
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -51,7 +190,11 @@
         $pdf->SetTitle('Reporte de paciente');
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $margin_left = 25.4; 
+        $margin_top = 25.4;
+        $margin_right = 25.4;
+        $margin_bottom = 25.4;
+        $pdf->SetMargins($margin_left, $margin_top, $margin_right);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         // set auto page breaks
@@ -238,12 +381,88 @@
         $pdf->writeHTML($html, true, false, true, false, '');
 
         $pdf->Output('datos_personales.pdf', 'I');
-        
     }
 
-    function pr() {
-        // create new PDF document
-        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->Output('datos_personales.pdf', 'I');
+    // Report medical certificate
+    function rptCertificate($data) {
+        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'Letter', true, 'UTF-8', false);
+        $pdf->SetTitle('Certificado medico');
+
+        // set margins
+        $margin_left = 25.4; 
+        $margin_top = 25.4;
+        $margin_right = 25.4;
+        $margin_bottom = 25.4;
+        $pdf->SetMargins($margin_left, $margin_top, $margin_right);
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(10);
+        // set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, 10);
+
+        // add page
+        $pdf->AddPage();
+
+        $template = '
+            <style>
+                p {
+                    font-family: "times", sans-serif;
+                    text-align: justify;
+                    font-size: 12pt;
+                }
+                .line {
+                    line-height: 2.0;
+                }
+            </style>
+            <br><br>
+            <p class="line">Portoviejo, {{current_date}}</p>
+            <br>
+            <p class="line">Informo que {{pronoun}} paciente <b>{{patient}}</b>, con cédula 
+                de ciudadanía C.I. <b>{{dni}}</b>, es atendido en mi consultorio particular ubicado 
+                en la calle Pedro Gual y 18 de octubre. Se brindó la atención médica por 
+                <b>{{reason}}</b>, teniendo como diagnóstico <b>{{diagnosis}}</b>, 
+                enfermedad con código <b>{{disease_code}}</b>. Se envía el respectivo tratamiento y 
+                reposo obligatorio por {{rest_time}}, desde el {{from_date}} hasta el {{till_date}}, 
+                para observar su evolución.
+                <br>
+            </p>
+            <p>El interesado puede hacer uso del presente certificado como crea conveniente.<br><br></p>
+            <p>Atentamente.<br><br><br><br><br></p>
+            <p>Dr. Jhonny Rodrigo Hidalgo Palacios<br>C.I. # 1305239293<br>PEDIATRA – NEONATÓLOGO<br>E-mail: jhonnyr_dr@hotmail.com<br>Contactos: 0994441106 - 0999787684<br></p>
+        ';
+
+        $html = str_replace(
+            array(
+                '{{current_date}}',
+                '{{pronoun}}',
+                '{{patient}}',
+                '{{dni}}',
+                '{{reason}}', 
+                '{{diagnosis}}', 
+                '{{disease_code}}',
+                '{{rest_time}}',
+                '{{from_date}}',
+                '{{till_date}}'
+            ),
+            array(
+                $data['current_date'],
+                $data['pronoun'],
+                $data['patient'], 
+                $data['dni'], 
+                $data['reason'], 
+                $data['diagnosis'], 
+                $data['disease_code'],
+                $data['rest_time'],
+                $data['from_date'],
+                $data['till_date']
+            ),
+            $template
+        );
+
+
+
+        // generate content html pdf
+        $pdf->writeHTML($html, true, false, true, false, '');
+
+        $pdf->Output('Cetificado_medico.pdf', 'I');
     }
 ?>

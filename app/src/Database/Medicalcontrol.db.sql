@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS `recipe`;
 CREATE TABLE IF NOT EXISTS `recipe` (
   `id_recipe` int(11) NOT NULL AUTO_INCREMENT,
-  `medication` varchar(300) NOT NULL,
-  `indication` varchar(300) NOT NULL,
+  `medication` text NOT NULL,
+  `indication` text NOT NULL,
   `status` int(11) NOT NULL,
   PRIMARY KEY (`id_recipe`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `medicalcontrol` (
   `id_medicalcontrol` int(11) NOT NULL AUTO_INCREMENT,
   `appointment` int(11) NOT NULL,
   `recipe` int(11) NOT NULL,
-  `age_days` int(11) NOT NULL,
+  `months_age` int(11) NOT NULL,
   `weight_kg` decimal(5, 2) NOT NULL,
   `weight_pounds` decimal(5, 2) NOT NULL,
   `height_cm` decimal(5, 2) NOT NULL,

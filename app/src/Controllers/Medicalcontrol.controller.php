@@ -9,19 +9,18 @@
             if ($_POST) {
                 if (verifyApiKey()) {
                     $this->appointment = $_POST['appointment'];
-                    $this->recipe = $_POST['recipe'];
-                    $this->age_days = $_POST['age_days'];
+                    $this->months_age = $_POST['months_age'];
                     $this->weight_kg = $_POST['weight_kg'];
                     $this->weight_pounds = $_POST['weight_pounds'];
                     $this->height_cm = $_POST['height_cm'];
                     $this->bmi_quant = $_POST['bmi_quant'];
                     $this->bmi_quali = $_POST['bmi_quali'];
-                    $this->temperature = $_POST['temperature'];
+                    $this->temperature = $_POST['temperature'] == '' ? 0 : $_POST['temperature'];
                     $this->observation = $_POST['observation'];
                     $this->medication = $_POST['medication'];
                     $this->indication = $_POST['indication'];
 
-                    if (empty($this->appointment) || empty($this->recipe) || empty($this->age_days) 
+                    if (empty($this->appointment) || empty($this->months_age) 
                         || empty($this->weight_kg) || empty($this->weight_pounds) || empty($this->height_cm)
                         || empty($this->bmi_quant) || empty($this->bmi_quali)) {
                         $res = array(
@@ -30,23 +29,23 @@
                         );
                     } else {
                         $recipeData = array(
-                            'medication' => $medication,
-                            'indication' => $indication
+                            'medication' => $this->medication,
+                            'indication' => $this->indication
                         );  
-                        $req_id_recipe = $this->model->createRecipe($recipe);
+                        $req_id_recipe = $this->model->createRecipe($recipeData);
 
-                        if ($req_id_user > 0) {
+                        if ($req_id_recipe > 0) {
                             $medicalcontrolData = array(
-                                'appointment' => $appointment,
+                                'appointment' => $this->appointment,
                                 'recipe' => $req_id_recipe,
-                                'age_days' => $age_days,
-                                'weight_kg' => $weight_kg,
-                                'weight_pounds' => $weight_pounds,
-                                'height_cm' => $height_cm,
-                                'bmi_quant' => $bmi_quant,
-                                'bmi_quali' => $bmi_quali,
-                                'temperature' => $temperature,
-                                'observation' => $observation
+                                'months_age' => $this->months_age,
+                                'weight_kg' => $this->weight_kg,
+                                'weight_pounds' => $this->weight_pounds,
+                                'height_cm' => $this->height_cm,
+                                'bmi_quant' => $this->bmi_quant,
+                                'bmi_quali' => $this->bmi_quali,
+                                'temperature' => $this->temperature,
+                                'observation' => $this->observation
                             ); 
                             $req = $this->model->create($medicalcontrolData);
 
@@ -84,8 +83,6 @@
             if ($_POST) {
                 if (verifyApiKey()) {
                     $this->appointment = $_POST['appointment'];
-                    $this->recipe = $_POST['recipe'];
-                    $this->age_days = $_POST['age_days'];
                     $this->weight_kg = $_POST['weight_kg'];
                     $this->weight_pounds = $_POST['weight_pounds'];
                     $this->height_cm = $_POST['height_cm'];
@@ -93,9 +90,11 @@
                     $this->bmi_quali = $_POST['bmi_quali'];
                     $this->temperature = $_POST['temperature'];
                     $this->observation = $_POST['observation'];
+                    $this->medication = $_POST['medication'];
+                    $this->indication = $_POST['indication'];
 
-                    if (empty($this->appointment) || empty($this->recipe) || empty($this->age_days) 
-                        || empty($this->weight_kg) || empty($this->weight_pounds) || empty($this->height_cm)
+                    if (empty($this->appointment) || empty($this->weight_kg) 
+                        || empty($this->weight_pounds) || empty($this->height_cm)
                         || empty($this->bmi_quant) || empty($this->bmi_quali)) {
                         $res = array(
                             'status' => false, 
@@ -103,16 +102,16 @@
                         );
                     } else {
                         $medicalcontrolData = array(
-                            'appointment' => $appointment,
-                            'recipe' => $recipe,
-                            'age_days' => $age_days,
-                            'weight_kg' => $weight_kg,
-                            'weight_pounds' => $weight_pounds,
-                            'height_cm' => $height_cm,
-                            'bmi_quant' => $bmi_quant,
-                            'bmi_quali' => $bmi_quali,
-                            'temperature' => $temperature,
-                            'observation' => $observation
+                            'appointment' => $this->appointment,
+                            'weight_kg' => $this->weight_kg,
+                            'weight_pounds' => $this->weight_pounds,
+                            'height_cm' => $this->height_cm,
+                            'bmi_quant' => $this->bmi_quant,
+                            'bmi_quali' => $this->bmi_quali,
+                            'temperature' => $this->temperature,
+                            'observation' => $this->observation,
+                            'medication' => $this->medication,
+                            'indication' => $this->indication
                         ); 
                         $req = $this->model->update($medicalcontrolData);
                         
@@ -209,6 +208,39 @@
                     ); 
                 } 
                 echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Unique medical control get function by appointment
+        public function getByAppointment() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_GET['id_appointment'];
+                    $req = $this->model->getByAppointment($this->id_appointment);
+                    $res = array(
+                        'status' => true, 
+                        'data' => $req
+                    );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        function Recipe() {
+            if ($_GET) {
+                $this->appointment = $_GET['appointment'];
+                $req = $this->model->getByAppointment($this->appointment);
+                if (!empty($req)) {
+                    $req['age'] = calculateAge($req['birthdate'], $req['date']);
+                }
+                $this->views->getViews($this,"Recipe", $req);
             }
             die();
         }

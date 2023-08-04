@@ -180,4 +180,64 @@
     function deletePhotoServer(String $name) {
         unlink('./app/Assets/Images/Medical-control/'.$name);
     }
+
+    //Calculate age
+    function calculateAge(string $birthdate, string $date) {
+        $birthdate = new DateTime($birthdate);
+        $date = new DateTime($date);
+        $difference = $birthdate->diff($date);
+
+        $years = $difference->y;
+        $months = $difference->m;
+        $days = $difference->d;
+        $res = '';
+
+        if ($years > 0) {
+            $res = "$years años";
+            if ($months > 0) {
+                $res .= " y $months meses";
+            }
+        } elseif ($months > 0) {
+            if ($days >= 7) {
+                $weeks = floor($days / 7);
+                $daysLeft = $days % 7;
+                if ($weeks === 1) {
+                    $res = "1 semana";
+                } else {
+                    $res = "$weeks semanas";
+                }
+                if ($daysLeft > 0) {
+                    $res .= " y $daysLeft días";
+                }
+            } else {
+                $res = "$months meses";
+                if ($days > 0) {
+                    $res .= " y $days días";
+                }
+            }
+        } elseif ($days > 0) {
+            if ($days >= 7) {
+                $weeks = floor($days / 7);
+                $daysLeft = $days % 7;
+                if ($weeks === 1) {
+                    $res = "1 semana";
+                } else {
+                    $res = "$weeks semanas";
+                }
+                if ($daysLeft > 0) {
+                    $res .= " y $daysLeft días";
+                }
+            } else {
+                $res = "$days días";
+            }
+        } else {
+            $res = "Verificar fecha de nacimiento";
+        }
+
+        return $res;
+    }
+    
+    function formatDate($date) {
+        return strftime('%A, %e de %B de %Y', strtotime($date));
+    }
 ?>

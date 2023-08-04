@@ -21,7 +21,7 @@
         public function create($medicalcontrolData) {
             $appointment = $medicalcontrolData['appointment'];
             $recipe = $medicalcontrolData['recipe'];
-            $age_days = $medicalcontrolData['age_days'];
+            $months_age = $medicalcontrolData['months_age'];
             $weight_kg = $medicalcontrolData['weight_kg'];
             $weight_pounds = $medicalcontrolData['weight_pounds'];
             $height_cm = $medicalcontrolData['height_cm'];
@@ -30,10 +30,10 @@
             $temperature = $medicalcontrolData['temperature'];
             $observation = $medicalcontrolData['observation'];
 
-            $Query = "INSERT INTO medicalcontrol (appointment, recipe, age_days, weight_kg, weight_pounds, height_cm, bmi_quant, bmi_quali, temperature, observation) 
+            $Query = "INSERT INTO medicalcontrol (appointment, recipe, months_age, weight_kg, weight_pounds, height_cm, bmi_quant, bmi_quali, temperature, observation) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $Array = array(
-                $appointment, $recipe, $age_days, $weight_kg, $weight_pounds, $height_cm, $bmi_quant,
+                $appointment, $recipe, $months_age, $weight_kg, $weight_pounds, $height_cm, $bmi_quant,
                 $bmi_quali, $temperature, $observation
             );
             $req = $this->InsertMySQL($Query, $Array);
@@ -45,8 +45,6 @@
         // Medicalcontrol update function
         public function update($medicalcontrolData) {
             $appointment = $medicalcontrolData['appointment'];
-            $recipe = $medicalcontrolData['recipe'];
-            $age_days = $medicalcontrolData['age_days'];
             $weight_kg = $medicalcontrolData['weight_kg'];
             $weight_pounds = $medicalcontrolData['weight_pounds'];
             $height_cm = $medicalcontrolData['height_cm'];
@@ -58,12 +56,12 @@
             $indication = $medicalcontrolData['indication'];
 
             $Query = "UPDATE medicalcontrol mc INNER JOIN recipe re ON (mc.recipe=re.id_recipe) 
-                      SET mc.appointment=?, mc.recipe=?, mc.age_days=?, mc.weight_kg=?, mc.weight_pounds=?, 
-                          mc.height_cm=?, mc.bmi_quant=?, mc.bmi_quali=?, mc.temperature=?, mc.observation=?, 
+                      SET mc.weight_kg=?, mc.weight_pounds=?, mc.height_cm=?, 
+                          mc.bmi_quant=?, mc.bmi_quali=?, mc.temperature=?, mc.observation=?, 
                           re.medication=?, re.indication=?
                       WHERE mc.appointment = $appointment";
             $Array = array(
-                $appointment, $recipe, $age_days, $weight_kg, $height_cm, $bmi_quant, $bmi_quali,
+                $weight_kg, $weight_pounds, $height_cm, $bmi_quant, $bmi_quali,
                 $temperature, $observation, $medication, $indication
             );
             $req = $this->UpdateMySQL($Query, $Array);
@@ -108,6 +106,18 @@
                       INNER JOIN user us ON (dc.user=us.id_user)
                       INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
                       WHERE mc.id_medicalcontrol = $id_medicalcontrol";
+            return $this->SelectMySQL($Query);
+        }
+
+        // Unique medicalcontrol get function by appointment
+        public function getByAppointment($id_appointment) {
+            $Query = "SELECT CONCAT(pt.name, ' ', pt.lastname) AS patient, pt.birthdate,
+                             ap.date, mc.*, re.*
+                      FROM medicalcontrol mc
+                      INNER JOIN recipe re ON (mc.recipe=re.id_recipe)
+                      INNER JOIN appointment ap ON (mc.appointment=ap.id_appointment)
+                      INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
+                      WHERE mc.appointment = $id_appointment";
             return $this->SelectMySQL($Query);
         }
     }
