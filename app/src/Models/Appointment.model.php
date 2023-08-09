@@ -36,7 +36,6 @@
                 $req = $this->InsertMySQL($Query, $Array);
                 $req ?  $res = $req : $res = 0;
             }
-
             return $res;
         }
 
@@ -56,7 +55,7 @@
 
             $Query_validate = "SELECT * FROM appointment 
                                WHERE date = '$date' AND hour = '$hour' AND status != 0 AND id_appointment != $id_appointment";
-            $req_validate = $this->SelectAllMySQL($Query_validate);
+            $req_validate = $this->SelectMySQL($Query_validate);
 
             if (empty($req_v_calendar)) {
                 $res = '!exists';
@@ -162,6 +161,24 @@
                       INNER JOIN user us ON (pr.user=us.id_user)
                       WHERE ap.id_appointment = $id_appointment";
             return $this->SelectMySQL($Query);
+        }
+
+        public function validateHours($date, $hour) {
+            $Query_v_settings = "SELECT * FROM settings";
+            $req_v_settings = $this->SelectMySQL($Query_v_settings);
+
+            $Query_appointment = "SELECT CONCAT(date, ' ', hour) AS datetime_ap FROM appointment";
+            $req_appointment = $this->SelectAllMySQL($Query_appointment);
+
+            $verify = checkAvailability(
+                $date.' '.$hour.':00',
+                $req_v_settings['scheduling_time'],
+                $req_appointment
+            );
+            
+            $verify ? $res = true : $res = false;
+
+            return $res;
         }
     }
 ?>
