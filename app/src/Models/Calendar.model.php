@@ -97,5 +97,16 @@
                         WHERE week_range = '$week_range' AND doctor = $id_doctor AND status != 0 ORDER BY date";
             return $this->SelectAllMySQL($Query);
         }
+
+        // Unique calendar retrieval function according to the doctor
+        public function getCalendarByDoctor($id_doctor, $week_range) {
+            $Query = "SELECT date, GROUP_CONCAT(CONCAT(start_time, ' - ', final_time) SEPARATOR '\n') AS hours 
+                        FROM calendar
+                        WHERE week_range = '$week_range' 
+                        AND doctor = $id_doctor 
+                        AND status = 1
+                        GROUP BY date";
+            return $this->SelectAllMySQL($Query);
+        }
     }
 ?>

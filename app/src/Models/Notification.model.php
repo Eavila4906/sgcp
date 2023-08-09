@@ -47,11 +47,11 @@
 
         //Notification all get function
         public function getAll() {
-            $Query = "SELECT nd.*, nt.* 
+            $Query = "SELECT nd.*, nt.*, CONCAT(us1.name, ' ', us1.lastname) AS sending_user
                       FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification)
                       INNER JOIN user us1 ON (nd.sending_user=us1.id_user) 
                       INNER JOIN user us2 ON (nd.recipient_user=us2.id_user) 
-                      WHERE nt.status != 0 ORDER BY nd.date ASC"; 
+                      WHERE nt.status != 0 ORDER BY nd.date DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 
@@ -88,7 +88,7 @@
         public function getNotificationsUser($id_user) {
             $Query = "SELECT nd.id_notification_details, nt.id_notification, nt.type, nt.description, nt.status, nd.date
                         FROM notification_details nd INNER JOIN notification nt ON (nd.notification=nt.id_notification) 
-                        WHERE nd.recipient_user = $id_user AND nt.status !=0 ORDER BY nd.date ASC";
+                        WHERE nd.recipient_user = $id_user AND nt.status !=0 ORDER BY nd.date DESC";
             return $this->SelectAllMySQL($Query);
         }
 

@@ -98,6 +98,7 @@
         public function getAll() {
             $Query = "SELECT CONCAT(ps.father_name, ' ', ps.father_lastname) AS father, 
                              CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother,
+                             CONCAT(us.name, ' ', us.lastname) AS representative,
                              CONCAT(pt.name, ' ', pt.lastname) AS patient, pt.* 
                       FROM patient pt 
                       INNER JOIN parents ps ON (pt.parents=ps.id_parents) 
@@ -131,7 +132,7 @@
         public function getAppointmentsForPatient($id_patient) {
             $Query = "SELECT pt.id_patient, CONCAT(pt.name, ' ', pt.lastname) AS patient, ap.* 
                         FROM patient pt INNER JOIN appointment ap ON (ap.patient=pt.id_patient)
-                        WHERE pt.id_patient = $id_patient AND ap.status != 0"; 
+                        WHERE pt.id_patient = $id_patient AND ap.status != 0 ORDER BY ap.date DESC"; 
             return $this->SelectAllMySQL($Query);
         }
     }

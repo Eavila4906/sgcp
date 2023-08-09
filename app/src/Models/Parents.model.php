@@ -119,7 +119,12 @@
 
         // Parents all get function
         public function getAll() {
-            $Query = "SELECT * FROM parents WHERE status != 0 ORDER BY id_parents DESC"; 
+            $Query = "SELECT pr.*, COUNT(pt.id_patient) AS num_children,
+                        CONCAT(us.name, ' ', us.lastname) AS representative
+                      FROM parents pr
+                      INNER JOIN patient pt ON (pt.parents=pr.id_parents)
+                      INNER JOIN user us ON (pr.user=us.id_user)
+                      WHERE pr.status != 0 GROUP BY pr.id_parents ORDER BY pr.id_parents DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 
@@ -128,11 +133,13 @@
             $Query = "SELECT us.username, us.email, us.name, us.lastname, ps.*,
                         CONCAT(us.name, ' ', us.lastname) AS representative,
                         CONCAT(ps.father_name, ' ', ps.father_lastname) AS father, 
-                        CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother
+                        CONCAT(ps.mother_name, ' ', ps.mother_lastname) AS mother,
+                        COUNT(pt.id_patient) AS num_children,
+                        GROUP_CONCAT(CONCAT(pt.name, ' ', pt.lastname) SEPARATOR ', ') AS childrens
                         FROM parents ps 
-                        INNER JOIN user us 
-                        ON (ps.user=us.id_user) 
-                        WHERE id_parents = $id_parents";
+                        INNER JOIN patient pt ON (pt.parents=ps.id_parents)
+                        INNER JOIN user us ON (ps.user=us.id_user) 
+                        WHERE id_parents = $id_parents GROUP BY ps.id_parents";
             return $this->SelectMySQL($Query);
         }
 
