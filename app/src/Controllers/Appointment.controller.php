@@ -21,37 +21,45 @@
                             'msg' => 'All fields are required.'
                         );
                     } else {
-                        $appointmentData = array(
-                            'doctor' => $this->doctor,
-                            'patient' => $this->patient,
-                            'date' => $this->date,
-                            'hour' => $this->hour,
-                            'description' => $this->description,
-                            'status' => $this->status
-                        );  
-                        $req = $this->model->create($appointmentData);
-
-                        if ($req > 0) {
-                            $res = array(
-                                'status' => true, 
-                                'msg' => 'Successfully registered appointment.',
-                                'id_appointment' => $req
-                            ); 
-                        } else if ($req == '!exists') {
+                        $validateHours = $this->model->validateHours($this->date, $this->hour);
+                        if (!$validateHours) {
                             $res = array(
                                 'status' => false, 
-                                'msg' => 'This process could not be performed, The doctor does not have a time allotted on her calendar for the date of .'.$this->date
-                            ); 
-                        } else if ($req == 'exists') {
-                            $res = array(
-                                'status' => false, 
-                                'msg' => 'This process could not be performed, the appointment already exists in our records.'
-                            ); 
+                                'msg' => 'This process could not be performed, The appointment cannot be scheduled at the requested time, the time required to schedule must be met.'
+                            );
                         } else {
-                            $res = array(
-                                'status' => false, 
-                                'msg' => 'This process could not be performed, please try again later [ERROR_APPOINTMENT].'
-                            ); 
+                            $appointmentData = array(
+                                'doctor' => $this->doctor,
+                                'patient' => $this->patient,
+                                'date' => $this->date,
+                                'hour' => $this->hour,
+                                'description' => $this->description,
+                                'status' => $this->status
+                            );  
+                            $req = $this->model->create($appointmentData);
+
+                            if ($req > 0) {
+                                $res = array(
+                                    'status' => true, 
+                                    'msg' => 'Successfully registered appointment.',
+                                    'id_appointment' => $req
+                                ); 
+                            } else if ($req == '!exists') {
+                                $res = array(
+                                    'status' => false, 
+                                    'msg' => 'This process could not be performed, The doctor does not have a time allotted on her calendar for the date of .'.$this->date
+                                ); 
+                            } else if ($req == 'exists') {
+                                $res = array(
+                                    'status' => false, 
+                                    'msg' => 'This process could not be performed, the appointment already exists in our records.'
+                                ); 
+                            } else {
+                                $res = array(
+                                    'status' => false, 
+                                    'msg' => 'This process could not be performed, please try again later [ERROR_APPOINTMENT].'
+                                ); 
+                            }
                         }
                     }
                 } else {
