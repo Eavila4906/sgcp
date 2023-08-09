@@ -181,7 +181,7 @@
         unlink('./app/Assets/Images/Medical-control/'.$name);
     }
 
-    //Calculate age
+    // Calculate age
     function calculateAge(string $birthdate, string $date) {
         $birthdate = new DateTime($birthdate);
         $date = new DateTime($date);
@@ -192,46 +192,18 @@
         $days = $difference->d;
         $res = '';
 
-        if ($years > 0) {
-            $res = "$years años";
-            if ($months > 0) {
-                $res .= " y $months meses";
-            }
-        } elseif ($months > 0) {
-            if ($days >= 7) {
-                $weeks = floor($days / 7);
-                $daysLeft = $days % 7;
-                if ($weeks === 1) {
-                    $res = "1 semana";
-                } else {
-                    $res = "$weeks semanas";
-                }
-                if ($daysLeft > 0) {
-                    $res .= " y $daysLeft días";
-                }
-            } else {
-                $res = "$months meses";
-                if ($days > 0) {
-                    $res .= " y $days días";
-                }
-            }
-        } elseif ($days > 0) {
-            if ($days >= 7) {
-                $weeks = floor($days / 7);
-                $daysLeft = $days % 7;
-                if ($weeks === 1) {
-                    $res = "1 semana";
-                } else {
-                    $res = "$weeks semanas";
-                }
-                if ($daysLeft > 0) {
-                    $res .= " y $daysLeft días";
-                }
-            } else {
-                $res = "$days días";
+        if ($years === 0 && $months === 0) {
+            $res = "$days día" . ($days != 1 ? 's' : '');
+        } elseif ($years === 0 && $months > 0) {
+            $res = "$months mes" . ($months != 1 ? 'es' : '');
+            if ($days > 0) {
+                $res .= " y $days día" . ($days != 1 ? 's' : '');
             }
         } else {
-            $res = "Verificar fecha de nacimiento";
+            $res = "$years año" . ($years != 1 ? 's' : '');
+            if ($months > 0) {
+                $res .= " y $months mes" . ($months != 1 ? 'es' : '');
+            }
         }
 
         return $res;
@@ -239,5 +211,30 @@
     
     function formatDate($date) {
         return strftime('%A, %e de %B de %Y', strtotime($date));
+    }
+
+    function timeToSeconds($time) {
+        list($hours, $minutes, $seconds) = explode(':', $time);
+    
+        $hoursInSeconds = (int)$hours * 3600;
+        $minutesInSeconds = (int)$minutes * 60; 
+        $seconds = (int)$seconds;
+        $totalSeconds = $hoursInSeconds + $minutesInSeconds + $seconds;
+    
+        return $totalSeconds;
+    }
+
+    function checkAvailability($date, $time, $appointmetns) {
+        $intervale = timeToSeconds($time);
+        $date_timestamp = strtotime($date);
+        foreach ($appointmetns as $appointment) {
+            $appointment_timestamp = strtotime($appointment['datetime_ap']);
+            $intervaleDiff = abs($appointment_timestamp - $date_timestamp);
+            if ($intervaleDiff < $intervale) {
+                return false;
+            }
+        }
+
+        return true;
     }
 ?>
