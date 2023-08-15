@@ -21,5 +21,27 @@
             die();
         }
 
+        // Unique medical control get function by appointment
+        public function getByAppointment() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_GET['id_appointment'];
+                    $req = $this->model->getByAppointment($this->id_appointment);
+                    $req['age'] = calculateAge($req['birthdate'], $req['date']);
+                    $res = array(
+                        'status' => true, 
+                        'data' => $req
+                    );
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
     }
 ?>
