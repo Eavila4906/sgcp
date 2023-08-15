@@ -9,6 +9,8 @@
     require_once("./app/src/Models/Appointment.model.php");
     require_once("./app/src/Models/Parents.model.php");
     require_once("./app/src/Models/Patient.model.php");
+    require_once("./app/src/Models/Medicalcontrol.model.php");
+    require_once("./app/src/Models/Reportsmedical.model.php");
 
     class Reportspdf extends Controllers {
         public function __constructor() {
@@ -226,6 +228,59 @@
                         $req['status'] = $req['status'] == 1 ? 'Activo' : 'Inactivo';
                     }
                     rptPatient($req);
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Report medical record patient
+        function rptMedicalRecord() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_patient = $_GET['id_patient'];
+                    $medicalControlModel = new Medicalcontrol_model();
+                    $req = '';
+                    $req = $medicalControlModel->getByPatient($this->id_patient);
+                    for ($i = 0; $i < count($req); $i++) {
+                        $req[$i]['age'] = calculateAge($req[$i]['birthdate'], $req[$i]['date']);
+                        $req[$i]['temperature'] = $req[$i]['temperature'] == 0.00 ? 'No hay registro' : $req[$i]['temperature'].' °C';
+                        $req[$i]['observation'] = $req[$i]['observation'] == '' ? 'No hay registro' : $req[$i]['observation'];
+                    }
+                    rptMedicalRecord($req);
+                } else {
+                    $res = array(
+                        'status' => false,
+                        'msg' => 'Attention! You need a key to access the API.'
+                    ); 
+                } 
+                echo json_encode($res, JSON_UNESCAPED_UNICODE);
+            }
+            die();
+        }
+
+        // Report medical control patient
+        function rptMedicalcontrol() {
+            if ($_GET) {
+                if (verifyApiKey()) {
+                    $this->id_appointment = $_GET['id_appointment'];
+                    $ReportsmedicalModel = new Reportsmedical_model();
+                    $req = '';
+                    $req = $ReportsmedicalModel->getByAppointment($this->id_appointment);
+                    if (!empty($req)) {
+                        $req['age'] = calculateAge($req['birthdate'], $req['date']);
+                        $req['weight'] = $req['weight_kg'].' kg - '.$req['weight_pounds'].' lb';
+                        $req['height'] = $req['height_cm'].' cm';
+                        $req['temperature'] = $req['temperature'] == 0.00 ? 'No hay registro' : $req['temperature'].' °C';
+                        $req['observation'] = $req['observation'] == '' ? 'No hay registro' : $req['observation'];
+                    }
+                    
+                    rptMedicalcontrol($req);
                 } else {
                     $res = array(
                         'status' => false,

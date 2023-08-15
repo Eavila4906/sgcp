@@ -120,5 +120,19 @@
                       WHERE mc.appointment = $id_appointment";
             return $this->SelectMySQL($Query);
         }
+
+        // Unique medicalcontrol get function by patient
+        public function getByPatient($id_patient) {
+            $Query = "SELECT pt.name, pt.lastname, pt.birthdate,
+                             CONCAT(us.name, ' ', us.lastname, ' - ', dc.specialty) AS doctor,
+                             ap.date, ap.photo, mc.*
+                      FROM medicalcontrol mc
+                      INNER JOIN appointment ap ON (mc.appointment=ap.id_appointment)
+                      INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
+                      INNER JOIN doctor dc ON (ap.doctor=dc.id_doctor) 
+                      INNER JOIN user us ON (dc.user=us.id_user)
+                      WHERE ap.patient = $id_patient";
+            return $this->SelectAllMySQL($Query);
+        }
     }
 ?>

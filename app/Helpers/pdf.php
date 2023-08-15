@@ -1194,6 +1194,565 @@
         $pdf->Output('datos_personales.pdf', 'I');
     }
 
+    // Report data personal patient
+    function rptMedicalRecord($data) {
+        $pdf = new PDF('P', 'mm', PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetTitle('Historial médico');
+
+        $margin_left = 25.4; 
+        $margin_top = 45.4;
+        $margin_right = 25.4;
+        $margin_bottom = 25.4;
+        $pdf->SetMargins($margin_left, $margin_top, $margin_right);
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+
+        $titleHtml = '
+            <style>
+                h1 {
+                    font-family: "times", sans-serif;
+                    text-align: center;
+                }
+            </style>
+            <h1>HISTORIAL MEDICO</h1> <br>
+        ';
+
+        if (empty($data)) {
+            $pdf->AddPage();
+            $pdf->writeHTML('<h1>NO HAY REGISTROS</h1>', true, false, true, false, '');
+        }
+
+        $table_content = '';
+        $max_registers = 2;
+        $total_registers = count($data);
+
+        for ($i=0; $i < count($data); $i++) {
+            $num = $i+1;
+            $date = $data[$i]['date'];
+            $doctor = $data[$i]['doctor'];
+            $name = $data[$i]['name'];
+            $lastname = $data[$i]['lastname'];
+            $age = $data[$i]['age'];
+            $weight = $data[$i]['weight_kg'].' kg - '.$data[$i]['weight_pounds'].' lb';
+            $height = $data[$i]['height_cm'].' cm';
+            $temperature = $data[$i]['temperature'];
+            $bmi_quant = $data[$i]['bmi_quant'];
+            $bmi_quali = $data[$i]['bmi_quali'];
+            $observation = $data[$i]['observation'];
+            $photo = $data[$i]['photo'];
+
+            $table_content .= '
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="4" class="b-header blod-font">CONTROL MEDICO - N° '.$num.' </th>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">FECHA:</th>
+                        <td>'.$date.'</td>
+                        <th class="blod-font">ATENDIDO POR:</th>
+                        <td>Dr. '.$doctor.'</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">NOMBRES:</th>
+                        <td>'.$name.'</td>
+                        <th class="blod-font">APELLIDOS:</th>
+                        <td>'.$lastname.'</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">EDAD:</th>
+                        <td>'.$age.'</td>
+                        <th class="blod-font">PESO:</th>
+                        <td>'.$weight.'</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">ESTATURA:</th>
+                        <td>'.$height.'</td>
+                        <th class="blod-font">TEMPERATURA:</th>
+                        <td>'.$temperature.'</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">IMC CUANTITATIVO:</th>
+                        <td>'.$bmi_quant.'</td>
+                        <th class="blod-font">IMC CUALITATIVO:</th>
+                        <td>'.$bmi_quali.'</td>
+                    </tr>
+
+                </table>
+
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="2" class="b-header blod-font">OBSERVACION - FOTO</th>
+                    </tr>
+
+                    <tr>
+                        <td>'.$observation.'</td>
+                        <td>
+                            <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/'.$photo.'"
+                                class="image">
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="mb-5"></div>
+            ';
+
+            if (($i + 1) % $max_registers == 0 || ($i + 1) == $total_registers) {
+                if ($table_content != '') {
+                    $pdf->AddPage();
+                }
+
+
+                $pdf->writeHTML($titleHtml, true, false, true, false, '');
+        
+                $template = '
+                    <style>
+
+                        table {
+                            font-family: "times", sans-serif;
+                        }
+
+                        .b-header {
+                            background-color: #78a7ff;
+                        }
+
+                        .blod-font {
+                            font-weight: bold;
+                        }
+
+                        .mb-5 {
+                            margin-bottom: 5px;
+                        }
+
+                        .personal-info {
+                            width: 100%;
+                            border-collapse: collapse;
+                            border: 1px solid black;
+                            margin-top: 0;
+                        }
+                        
+                        .personal-info th,
+                        .personal-info td {
+                            border: 0.5px solid black;
+                            padding: 1px;
+                        }
+                    
+                        .personal-info th {
+                            background-color: rgb(212, 209, 209);
+                            text-align: left;
+                            max-width: 80px; 
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                        .personal-info td {
+                            text-align: left;
+                            max-width: 300px; 
+                        }
+
+                        .image {
+                            width: 175;
+                            height: auto;
+                            border: 1px solid rgb(0, 0, 0);
+                            border-radius: 1px;
+                            position: relative;
+                            left: 1010px;
+                            top: 170px;
+                        }
+                    </style>
+                    
+                    '.$table_content.'
+                ';
+        
+                $pdf->writeHTML($template, true, false, true, false, '');
+        
+                $table_content = '';
+            } 
+
+        }
+        
+
+        /*if (empty($data)) {
+            $pdf->writeHTML('<h1>NO HAY REGISTRO</h1>', true, false, true, false, '');
+        } else {
+            $pdf->writeHTML($titleHtml, true, false, true, false, '');
+            $template = '
+                <style>
+
+                    table {
+                        font-family: "times", sans-serif;
+                    }
+
+                    .b-header {
+                        background-color: #78a7ff;
+                    }
+
+                    .blod-font {
+                        font-weight: bold;
+                    }
+
+                    .mb-5 {
+                        margin-bottom: 5px;
+                    }
+
+                    .personal-info {
+                        width: 100%;
+                        border-collapse: collapse;
+                        border: 1px solid black;
+                        margin-top: 0;
+                    }
+                    
+                    .personal-info th,
+                    .personal-info td {
+                        border: 0.5px solid black;
+                        padding: 1px;
+                    }
+                
+                    .personal-info th {
+                        background-color: rgb(212, 209, 209);
+                        text-align: left;
+                        max-width: 80px; 
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .personal-info td {
+                        text-align: left;
+                        max-width: 300px; 
+                    }
+
+                    .image {
+                        width: 175;
+                        height: auto;
+                        border: 1px solid rgb(0, 0, 0);
+                        border-radius: 1px;
+                        position: relative;
+                        left: 1010px;
+                        top: 170px;
+                    }
+                </style>
+                
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="4" class="b-header blod-font">CONTROL MEDICO - N° 1 </th>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">FECHA:</th>
+                        <td>2023-08-08</td>
+                        <th class="blod-font">ATENDIDO POR:</th>
+                        <td>Dr. Jhony Hidalgo - pediatra</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">NOMBRES:</th>
+                        <td>Miguel Jose</td>
+                        <th class="blod-font">APELLIDOS:</th>
+                        <td>Vera Moreira</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">EDAD:</th>
+                        <td>2 meses y 4 dias</td>
+                        <th class="blod-font">PESO:</th>
+                        <td>10 kg - 25 lb</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">ESTATURA:</th>
+                        <td>55 cm</td>
+                        <th class="blod-font">TEMPERATURA:</th>
+                        <td>No hay registro</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">IMC CUANTITATIVO:</th>
+                        <td>24.5</td>
+                        <th class="blod-font">IMC CUALITATIVO:</th>
+                        <td>Normal</td>
+                    </tr>
+
+                </table>
+
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="2" class="b-header blod-font">OBSERVACION - FOTO</th>
+                    </tr>
+
+                    <tr>
+                        <td>No hay registro</td>
+                        <td>
+                            <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/img_ce759a1d9fde084e6455472a866685ac.jpg"
+                                class="image">
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="mb-5"></div>
+                
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="4" class="b-header blod-font">CONTROL MEDICO - N° 1 </th>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">FECHA:</th>
+                        <td>2023-08-08</td>
+                        <th class="blod-font">ATENDIDO POR:</th>
+                        <td>Dr. Jhony Hidalgo - pediatra</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">NOMBRES:</th>
+                        <td>Miguel Jose</td>
+                        <th class="blod-font">APELLIDOS:</th>
+                        <td>Vera Moreira</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">EDAD:</th>
+                        <td>2 meses y 4 dias</td>
+                        <th class="blod-font">PESO:</th>
+                        <td>10 kg - 25 lb</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">ESTATURA:</th>
+                        <td>55 cm</td>
+                        <th class="blod-font">TEMPERATURA:</th>
+                        <td>No hay registro</td>
+                    </tr>
+
+                    <tr>
+                        <th class="blod-font">IMC CUANTITATIVO:</th>
+                        <td>24.5</td>
+                        <th class="blod-font">IMC CUALITATIVO:</th>
+                        <td>Normal</td>
+                    </tr>
+
+                </table>
+
+                <table class="personal-info">
+                    <tr>
+                        <th colspan="2" class="b-header blod-font">OBSERVACION - FOTO</th>
+                    </tr>
+
+                    <tr>
+                        <td>No hay registro</td>
+                        <td>
+                            <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/img_ce759a1d9fde084e6455472a866685ac.jpg"
+                                class="image">
+                        </td>
+                    </tr>
+                </table>
+            ';
+
+           /*$html = str_replace(
+                array(
+                    '{{patient}}',
+                    '{{name}}',
+                    '{{lastname}}', 
+                    '{{birthdate}}', 
+                    '{{age}}',
+                    '{{sex}}',
+                    '{{weight_kg}}',
+                    '{{weight_pounds}}',
+                    '{{height}}',
+                    '{{blood_type}}',
+                    '{{family_obs}}',
+                    '{{personal_obs}}',
+                    '{{general_obs}}',
+                    '{{father}}',
+                    '{{mother}}',
+                    '{{representative}}',
+                    '{{status}}',
+                    '{{reg_date}}'
+                ),
+                array(
+                    $data['patient'], 
+                    $data['name'], 
+                    $data['lastname'], 
+                    $data['birthdate'], 
+                    $data['age'],
+                    $data['sex'],
+                    $data['weight_kg'],
+                    $data['weight_pounds'],
+                    $data['height'],
+                    $data['blood_type'],
+                    $data['family_obs'],
+                    $data['personal_obs'],
+                    $data['general_obs'],
+                    $data['father'],
+                    $data['mother'],
+                    $data['representative'],
+                    $data['status'],
+                    $data['reg_date']
+                ),
+                $template
+            );
+
+            $pdf->writeHTML($html, true, false, true, false, '');
+        }
+        $pdf->writeHTML($template, true, false, true, false, '');*/
+        $pdf->Output('Historial médico.pdf', 'I');
+    }
+
+    // Report data personal patient
+    function rptMedicalcontrol($data) {
+        $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->SetTitle(empty($data) ? 'No hay registro' : 'Control médico '.$data['date']);
+
+        $margin_left = 25.4; 
+        $margin_top = 45.4;
+        $margin_right = 25.4;
+        $margin_bottom = 25.4;
+        $pdf->SetMargins($margin_left, $margin_top, $margin_right);
+        $pdf->SetHeaderMargin(10);
+        $pdf->SetFooterMargin(10);
+        $pdf->SetAutoPageBreak(TRUE, 10);
+
+        $pdf->AddPage();
+
+        if (empty($data)) {
+            $pdf->writeHTML('<h1>NO HAY REGISTRO</h1>', true, false, true, false, '');
+        } else {
+            $template = '
+                <style>
+                    table {
+                        margin-top : 0px;
+                        font-family: "times", sans-serif;
+                    }
+                    .margin {
+                        margin-left: 20px;
+                    }
+                    .title {
+                        font-family: "times", sans-serif;
+                        text-align: center;
+                        line-height: 0.6;
+                    }
+
+                    .image {
+                        width: 175;
+                        height: auto;
+                        border: 1px solid rgb(0, 0, 0);
+                        border-radius: 1px;
+                        position: relative;
+                        left: 1010px;
+                        top: 170px;
+                    }
+                </style>
+
+                <h3 class="title">CONTROL MEDICO</h3>
+                <div></div>
+
+                <table>
+
+                    <tbody>
+                        <tr>
+                            <td><b>Fecha:</b></td>
+                            <td>{{date}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Atendido por:</b></td>
+                            <td>{{doctor}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Nombres:</b></td>
+                            <td>{{name}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Apellidos:</b></td>
+                            <td>{{lastname}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Edad:</b></td>
+                            <td>{{age}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Peso:</b></td>
+                            <td>{{weight}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Estatura:</b></td>
+                            <td>{{height}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Temperatura:</b></td>
+                            <td>{{temperature}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>IMC Cuantitativo:</b></td>
+                            <td>{{bmi_quant}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>IMC Cualitativo:</b></td>
+                            <td>{{bmi_quali}}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Observación:</b></td>
+                            <td>{{observation}}</td>
+                        </tr>
+                        
+                    </tbody>
+
+                    <table>
+
+                        <h4>FOTO:</h4>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/{{photo}}"
+                                    class="image">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </table>
+            ';
+
+            $html = str_replace(
+                array(
+                    '{{date}}',
+                    '{{doctor}}',
+                    '{{name}}',
+                    '{{lastname}}', 
+                    '{{age}}',
+                    '{{weight}}',
+                    '{{height}}',
+                    '{{temperature}}',
+                    '{{bmi_quant}}',
+                    '{{bmi_quali}}',
+                    '{{observation}}',
+                    '{{photo}}'
+                ),
+                array(
+                    $data['date'], 
+                    $data['doctor'], 
+                    $data['name'], 
+                    $data['lastname'], 
+                    $data['age'],
+                    $data['weight'],
+                    $data['height'],
+                    $data['temperature'],
+                    $data['bmi_quant'],
+                    $data['bmi_quali'],
+                    $data['observation'],
+                    $data['photo']
+                ),
+                $template
+            );
+
+            $pdf->writeHTML($html, true, false, true, false, '');
+        }
+        $pdf->Output(empty($data) ? 'No hay registro' : 'Control médico '.$data['date'].'.pdf', 'I');
+    }
+
     // Report medical certificate
     function rptCertificate($data) {
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, 'Letter', true, 'UTF-8', false);
