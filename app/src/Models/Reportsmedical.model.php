@@ -10,7 +10,7 @@
                         FROM appointment ap
                         INNER JOIN medicalcontrol mc ON (mc.appointment=ap.id_appointment)
                         WHERE patient = $id_patient
-                        AND status = 1"; 
+                        AND status = 1 ORDER BY ap.id_appointment DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 
@@ -34,7 +34,13 @@
                       FROM medicalcontrol mc
                       INNER JOIN appointment ap ON (mc.appointment=ap.id_appointment)
                       INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
-                      WHERE ap.patient = $id_patient AND ap.status = 1 GROUP BY mc.months_age";
+                      WHERE ap.patient = $id_patient AND ap.status = 1 AND mc.id_medicalcontrol IN (
+                        SELECT MAX(mc_inner.id_medicalcontrol)
+                        FROM medicalcontrol mc_inner
+                        INNER JOIN appointment ap_inner ON (mc_inner.appointment = ap_inner.id_appointment)
+                        WHERE ap_inner.patient = $id_patient AND ap_inner.status = 1
+                        GROUP BY mc_inner.months_age
+                      )";
             return $this->SelectAllMySQL($Query);
         }
     }
