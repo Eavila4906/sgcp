@@ -17,7 +17,7 @@
 
         // Appointment all get function patient
         public function getAppointmentsPatient($id_user) {
-            $Query = "SELECT ap.id_appointment, ap.status, ap.date, ap.hour
+            $Query = "SELECT ap.id_appointment, ap.status, ap.date, ap.hour,
                              CONCAT(pt.name, ' ', pt.lastname) AS patient
                         FROM parents ps 
                         INNER JOIN patient pt ON (ps.id_parents=pt.parents)
