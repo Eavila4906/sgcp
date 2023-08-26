@@ -30,14 +30,20 @@
             $temperature = $medicalcontrolData['temperature'];
             $observation = $medicalcontrolData['observation'];
 
-            $Query = "INSERT INTO medicalcontrol (appointment, recipe, months_age, weight_kg, weight_pounds, height_cm, bmi_quant, bmi_quali, temperature, observation) 
+            $Query_mc = "INSERT INTO medicalcontrol (appointment, recipe, months_age, weight_kg, weight_pounds, height_cm, bmi_quant, bmi_quali, temperature, observation) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $Array = array(
+            $Array_mc = array(
                 $appointment, $recipe, $months_age, $weight_kg, $weight_pounds, $height_cm, $bmi_quant,
                 $bmi_quali, $temperature, $observation
             );
-            $req = $this->InsertMySQL($Query, $Array);
-            $req ?  $res = $req : $res = 0;
+
+            $Query_uap = "UPDATE appointment SET status=? WHERE id_appointment = $appointment";
+            $Array_uap = array(1);
+
+            $req_mc = $this->InsertMySQL($Query_mc, $Array_mc);
+            $req_uap = $this->UpdateMySQL($Query_uap, $Array_uap);
+
+            $req_mc && $req_mc ? $res = $req_mc : $res = 0;
 
             return $res;
         }
