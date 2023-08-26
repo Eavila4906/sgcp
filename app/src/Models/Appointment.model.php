@@ -90,7 +90,7 @@
                       FROM appointment ap INNER JOIN doctor dc ON (ap.doctor=dc.id_doctor)
                       INNER JOIN user us ON (dc.user=us.id_user)
                       INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
-                      WHERE ap.status != 0"; 
+                      WHERE ap.status != 0 ORDER BY ap.id_appointment DESC"; 
             return $this->SelectAllMySQL($Query);
         }
 
