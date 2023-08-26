@@ -237,4 +237,12 @@
 
         return true;
     }
+
+    function monthDifference($birthdate, $date) {
+        $date = new DateTime($date);
+        $birthdate = new DateTime($birthdate);
+        $interval = $birthdate->diff($date);
+        $months = ($interval->y * 12) + $interval->m;
+        return $months;
+    }
 ?>
