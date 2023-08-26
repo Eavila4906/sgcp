@@ -9,7 +9,7 @@
             if ($_POST) {
                 if (verifyApiKey()) {
                     $this->appointment = $_POST['appointment'];
-                    $this->months_age = $_POST['months_age'];
+                    $this->months_age = monthDifference($_POST['birthdate'], $_POST['date']);
                     $this->weight_kg = $_POST['weight_kg'];
                     $this->weight_pounds = $_POST['weight_pounds'];
                     $this->height_cm = $_POST['height_cm'];
@@ -19,7 +19,6 @@
                     $this->observation = $_POST['observation'];
                     $this->medication = $_POST['medication'];
                     $this->indication = $_POST['indication'];
-
                     if (empty($this->appointment) || empty($this->months_age) 
                         || empty($this->weight_kg) || empty($this->weight_pounds) || empty($this->height_cm)
                         || empty($this->bmi_quant) || empty($this->bmi_quali)) {
