@@ -118,7 +118,7 @@
         // Unique medicalcontrol get function by appointment
         public function getByAppointment($id_appointment) {
             $Query = "SELECT CONCAT(pt.name, ' ', pt.lastname) AS patient, pt.birthdate,
-                             ap.date, mc.*, re.*
+                             ap.date, ap.photo, mc.*, re.*
                       FROM medicalcontrol mc
                       INNER JOIN recipe re ON (mc.recipe=re.id_recipe)
                       INNER JOIN appointment ap ON (mc.appointment=ap.id_appointment)

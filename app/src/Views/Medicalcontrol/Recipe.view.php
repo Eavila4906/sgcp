@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <img src="../app/Assets/Images/pedia.png" class="image-size-m">
+                        <img src="../app/Assets/Images/Medical-control/<?=$data['photo']?>" class="image-size">
                     </div>
                 </div>
                 <hr>
@@ -67,7 +67,7 @@
                 <div class="content">
                     <div class="ms-5">
                         <b class="font-time font-s12">RP:</b>
-                        <img src="../app/Assets/Images/watermark.png" class="watermark">
+                        <!--<img src="../app/Assets/Images/watermark.png" class="watermark">-->
                         <div class="ms-5 font-time font-s12">
                             <?=$data['medication']?>
                         </div>
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <img src="../app/Assets/Images/pedia.png" class="image-size-m">
+                        <img src="../app/Assets/Images/Medical-control/<?=$data['photo']?>" class="image-size">
                     </div>
                 </div>
                 <hr>
@@ -136,7 +136,7 @@
                 <div class="content">
                     <div class="ms-5">
                         <b class="font-time font-s12">Indicaciones:</b>
-                        <img src="../app/Assets/Images/watermark.png" class="watermark">
+                        <!--<img src="../app/Assets/Images/watermark.png" class="watermark">-->
                         <div class="ms-5 font-time font-s12">
                             <?=$data['indication']?>
                         </div>
