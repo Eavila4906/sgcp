@@ -4,7 +4,7 @@
     class PDF extends TCPDF {
         public function Header() {
             $image_file = './app/Libraries/Reports/TcPDF/examples/images/logo.png';
-            $this->Image($image_file, 25, 7, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+            $this->Image($image_file, 25, 4, 25, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
             $this->SetY(10);
 
             $this->SetFont('times', 'B', 12);
