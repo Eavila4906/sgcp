@@ -59,8 +59,7 @@
                             } else {
                                 $res = array(
                                     'status' => true, 
-                                    'msg' => 'Successfully registered user, but there was an error sending the email.',
-                                    'pass' => $this->password
+                                    'msg' => 'Successfully registered user, but there was an error sending the email.'
                                 ); 
                             }
                         } else if ($req == "exists") {
