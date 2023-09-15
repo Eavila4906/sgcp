@@ -6,7 +6,7 @@
 
         // Appointment all get function for patient
         public function getAppointmentsForPatient($id_patient) {
-            $Query = "SELECT ap.id_appointment, ap.date, mc.observation 
+            $Query = "SELECT ap.id_appointment, ap.date, mc.observation, mc.weight_kg, mc.weight_pounds, mc.height_cm
                         FROM appointment ap
                         INNER JOIN medicalcontrol mc ON (mc.appointment=ap.id_appointment)
                         WHERE patient = $id_patient
