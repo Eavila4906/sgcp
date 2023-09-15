@@ -60,9 +60,9 @@
                                 <img src="../../../../app/Assets/Images/logo-white.png" alt="login form"
                                 class="img-fluid" 
                                 style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem; margin-top: 90px; margin-left: 30px; opacity: 95%;">
-                                <div style="margin-left: 70px;">
+                                <div style="margin-left: 60px;">
                                     <h1 class="fw-bold" style="color: white; margin-top: 3;">
-                                        SGCP
+                                        SGCCP
                                     </h1>
                                 </div>
                             </div>
