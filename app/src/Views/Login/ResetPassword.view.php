@@ -48,15 +48,23 @@
                 <div class="mask d-flex align-items-center h-100" style="background-color: #f3f2f2;">
                 <div class="container">
                     <div class="row d-flex justify-content-center align-items-center">
-                    <div class="col-12 col-lg-9 col-xl-8">
+                    <div class="col-12 col-lg-9 col-xl-7">
                         <div class="card" style="border-radius: 1rem;">
                         <div class="row g-0">
-                            <div class="col-md-4 d-none d-md-block">
-                            <img
-                                src="https://mdbootstrap.com/img/Photos/Others/sidenav2.jpg"
-                                alt="login form"
-                                class="img-fluid" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"
-                            />
+                            <div class="col-md-4 d-none d-md-block" style="background-color: #3369c0; border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">
+                                <!--<img
+                                    src="https://mdbootstrap.com/img/Photos/Others/sidenav2.jpg"
+                                    alt="login form"
+                                    class="img-fluid" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;"
+                                />-->
+                                <img src="../../../../app/Assets/Images/logo-white.png" alt="login form"
+                                class="img-fluid" 
+                                style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem; margin-top: 90px; margin-left: 30px; opacity: 95%;">
+                                <div style="margin-left: 70px;">
+                                    <h1 class="fw-bold" style="color: white; margin-top: 3;">
+                                        SGCP
+                                    </h1>
+                                </div>
                             </div>
                             <div class="col-md-8 d-flex align-items-center">
                             <div class="card-body py-5 px-4 p-md-5">
