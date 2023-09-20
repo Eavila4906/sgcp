@@ -30,7 +30,7 @@
 
         // Unique medicalcontrol get function by charts
         public function getRecordsByCharts($id_patient) {
-            $Query = "SELECT pt.sex, mc.weight_kg, mc.height_cm, mc.months_age
+            $Query = "SELECT pt.sex, mc.weight_kg, mc.height_cm, mc.months_age, mc.bmi_quant
                       FROM medicalcontrol mc
                       INNER JOIN appointment ap ON (mc.appointment=ap.id_appointment)
                       INNER JOIN patient pt ON (ap.patient=pt.id_patient) 

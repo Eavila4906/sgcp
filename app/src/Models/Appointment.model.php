@@ -86,7 +86,7 @@
         public function getAll() {
             $Query = "SELECT CONCAT(us.name, ' ', us.lastname) AS doctor_c, 
                              CONCAT(pt.name, ' ', pt.lastname) AS patient_c, 
-                             pt.birthdate, pt.id_patient, ap.*
+                             pt.birthdate, pt.sex, pt.id_patient, ap.*
                       FROM appointment ap INNER JOIN doctor dc ON (ap.doctor=dc.id_doctor)
                       INNER JOIN user us ON (dc.user=us.id_user)
                       INNER JOIN patient pt ON (ap.patient=pt.id_patient) 
