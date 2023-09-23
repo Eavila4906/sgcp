@@ -1,5 +1,6 @@
 <?php
     require_once("./app/Libraries/Reports/TcPDF/tcpdf.php");
+    include_once('./app/Helpers/Helpers.php');
 
     class PDF extends TCPDF {
         public function Header() {
@@ -1241,6 +1242,7 @@
             $bmi_quali = $data[$i]['bmi_quali'];
             $observation = $data[$i]['observation'];
             $photo = $data[$i]['photo'];
+            $base_url = BASE_URL();
 
             $table_content .= '
                 <table class="personal-info">
@@ -1293,7 +1295,7 @@
                     <tr>
                         <td>'.$observation.'</td>
                         <td>
-                            <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/'.$photo.'"
+                            <img src="'.$base_url.'app/Assets/Images/Medical-control/'.$photo.'"
                                 class="image">
                         </td>
                     </tr>
@@ -1601,7 +1603,7 @@
         $pdf->writeHTML($template, true, false, true, false, '');*/
         $pdf->Output('Historial médico.pdf', 'I');
     }
-
+    
     // Report data personal patient
     function rptMedicalcontrol($data) {
         $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -1617,6 +1619,8 @@
         $pdf->SetAutoPageBreak(TRUE, 10);
 
         $pdf->AddPage();
+
+        $data['base_url'] = BASE_URL();
 
         if (empty($data)) {
             $pdf->writeHTML('<h1>NO HAY REGISTRO</h1>', true, false, true, false, '');
@@ -1707,7 +1711,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src="http://localhost:8000/sgcp/app/Assets/Images/Medical-control/{{photo}}"
+                                    <img src="{{BASE_URL}}app/Assets/Images/Medical-control/{{photo}}"
                                     class="image">
                                 </td>
                             </tr>
@@ -1729,7 +1733,8 @@
                     '{{bmi_quant}}',
                     '{{bmi_quali}}',
                     '{{observation}}',
-                    '{{photo}}'
+                    '{{photo}}',
+                    '{{BASE_URL}}'
                 ),
                 array(
                     $data['date'], 
@@ -1743,7 +1748,8 @@
                     $data['bmi_quant'],
                     $data['bmi_quali'],
                     $data['observation'],
-                    $data['photo']
+                    $data['photo'],
+                    $data['base_url']
                 ),
                 $template
             );
